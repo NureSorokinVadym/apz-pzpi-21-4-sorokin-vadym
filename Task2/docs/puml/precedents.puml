@@ -1,0 +1,16 @@
+@startuml
+:Відвідувач спортзалу: as Client 
+:Адміністратор: as Admin 
+:Тренер: as Personal
+
+(Комунікувати між собою) as Comminicate
+(Домовлятися просто зустріч) as MakeMeeting
+
+Client - Comminicate
+Comminicate - Personal 
+MakeMeeting - Personal
+Client - MakeMeeting
+
+ 
+
+@enduml

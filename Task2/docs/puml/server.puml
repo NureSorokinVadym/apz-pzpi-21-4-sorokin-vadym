@@ -1,0 +1,37 @@
+@startuml
+
+node "Docker Compose" as Server {
+    [PostgreSQL]
+    [Redis]
+    [Nginx]
+
+    component "Python AI" as Python {
+     () "main.py"
+    } 
+    component "Rust bussines logic" as Rust {
+     () "main.rs"
+    }
+}
+
+[Nginx] --> [Rust]: HTTP
+[Rust] --> [PostgreSQL]: TPC/IP
+[Redis] <--> [Python]: TPC/IP
+[Redis] <--> [Rust]: TPC/IP
+
+component "Web Browser" as Web {
+    () "App.js"
+}
+
+component "Mobile phone" as Phone {
+    () "Main.apk"
+}
+
+component "Smart device" as IoT {
+    () "main.go?"
+}
+
+IoT -- Nginx: HTTPS
+Web -- Nginx: HTTPS
+Phone -- Nginx: HTTPS
+
+@enduml
