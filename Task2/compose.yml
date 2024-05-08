@@ -1,0 +1,35 @@
+services:
+  nginx:
+    build: ./nginx/
+    ports:
+      - "80:80"
+    depends_on:
+      - main-service
+      - ai-service
+
+  main-service:
+    build: ./main-server/
+    expose:
+      - "8000"
+    depends_on:
+      - db
+
+  ai-service:
+    build: ./ai-server/
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+  db:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: db
+
+networks:
+  internal:
+    driver: bridge
