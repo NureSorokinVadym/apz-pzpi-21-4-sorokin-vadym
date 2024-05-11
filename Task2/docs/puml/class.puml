@@ -1,0 +1,115 @@
+@startuml
+
+class Base {
+    create_at
+    update_at
+}
+
+class User {
+    id
+    name
+    surname
+    password_hash
+    photo
+    birthday
+}
+
+class Personal {
+    id
+    user_id
+    specification_id
+}
+
+User --|> Personal
+
+class Specification {
+    id
+    name
+}
+
+Specification --> Personal
+
+class Admin {
+    id
+    user_id
+    access_level
+}
+
+Admin --|> User
+
+class Reward {
+    id
+    name
+    condition: Like Exersice.count > 10 && ...
+} 
+
+class RewardUser {
+    id 
+    user_id
+    reward_id
+}
+
+
+class Exersice {
+    id
+    name
+    measurement: like number, level etc
+    exersice_type
+}
+
+class ExersiceUser {
+    id
+    exersice_id
+    user_id
+    duration
+    number
+    pulse
+    heardbeat
+}
+
+enum ExersiceType {
+    foot
+    hand
+}
+
+class Chat {
+    uuid
+    type
+    last_message
+}
+
+enum ChatType {
+    private
+    group
+    channel
+}
+
+class Message {
+    from_user
+    to_chat
+    text
+}
+
+class UserPersonal {
+    user_id
+    personal_id
+}
+
+ExersiceUser <-- User
+Exersice -l-> ExersiceUser
+
+ExersiceType -u-> Exersice
+User --> RewardUser
+Reward --> RewardUser
+
+User --> Message
+Chat --> Message
+
+Chat <-- ChatType
+
+UserPersonal <-- User
+Personal --> UserPersonal
+
+
+
+@enduml
