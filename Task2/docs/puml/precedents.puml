@@ -1,16 +1,37 @@
 @startuml
-:Відвідувач спортзалу: as Client 
+left to right direction
+
 :Адміністратор: as Admin 
-:Тренер: as Personal
 
-(Комунікувати між собою) as Comminicate
 (Домовлятися просто зустріч) as MakeMeeting
+(Система нагород) as Apretication
+(Notifications) as Notifications
+(Statistic like hour per week) as Statistic
+(Авторизація with group permition support) as Authorization
+(Комунікувати між собою) as Comminicate
+(Отримувати рекомендації стосовно вправ) as Recomendation
+(Відслідковувати кількість вправ) as NumberExersice
+(Додавати тренерів) as AddPersonal
 
-Client - Comminicate
-Comminicate - Personal 
-MakeMeeting - Personal
-Client - MakeMeeting
+Client -- MakeMeeting
+Client -- Apretication
+Client -- Notifications
+Client -- Statistic
+Client -- Authorization
+Client -- Comminicate
+Client -- Recomendation
+Client -- NumberExersice
+Client -- AddPersonal
 
- 
+Authorization -- Admin
+Comminicate -- Admin
+AddPersonal -- Admin
+
+Personal -- MakeMeeting
+Personal -- Apretication
+Personal -- Notifications
+Personal -- Statistic
+Personal -- Authorization
+Personal -- Comminicate
 
 @enduml
