@@ -12,50 +12,50 @@ CREATE TABLE user_base (
 );
 
 
----- Personal table
---CREATE TABLE Personal (
---  id SERIAL PRIMARY KEY,
---  user_id INTEGER NOT NULL UNIQUE,
---  specification_id INTEGER,
---  create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
---  update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
---  CONSTRAINT fk_user_personal FOREIGN KEY (user_id) REFERENCES user_base(id)
---);
---
----- Specification table
---CREATE TABLE Specification (
---  id SERIAL PRIMARY KEY,
---  name VARCHAR(255) NOT NULL
---);
---
----- Admin table (inherits from User)
---CREATE TABLE Admin (
---  id INTEGER PRIMARY KEY,
---  user_id INTEGER NOT NULL UNIQUE,
---  access_level INTEGER,
---  create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
---  update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
---  CONSTRAINT fk_admin_user FOREIGN KEY (user_id) REFERENCES BaseUser(id)
---);
---
----- Reward table
---CREATE TABLE Reward (
---  id SERIAL PRIMARY KEY,
---  name VARCHAR(255) NOT NULL,
---  condition TEXT NOT NULL,
---  create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
---);
---
----- RewardUser table
---CREATE TABLE RewardUser (
---  id SERIAL PRIMARY KEY,
---  user_id INTEGER NOT NULL,
---  reward_id INTEGER NOT NULL,
---  create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
---  update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
---  CONSTRAINT fk_rewarduser_user FOREIGN KEY (user_id) REFERENCES BaseUser(id),
---  CONSTRAINT fk_rewarduser_reward FOREIGN KEY (reward_id) REFERENCES Reward(id)
---);
+-- Personal table
+CREATE TABLE personal (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL UNIQUE,
+  specification_id INTEGER,
+  create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_user_personal FOREIGN KEY (user_id) REFERENCES user_base(id)
+);
+
+-- Specification table
+CREATE TABLE specification (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) NOT NULL
+);
+
+-- Admin table (inherits from User)
+CREATE TABLE admin (
+  id INTEGER PRIMARY KEY,
+  user_id INTEGER NOT NULL UNIQUE,
+  access_level INTEGER,
+  create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_admin_user FOREIGN KEY (user_id) REFERENCES BaseUser(id)
+);
+
+-- Reward table
+CREATE TABLE reward (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  condition TEXT NOT NULL,
+  create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- RewardUser table
+CREATE TABLE reward_user(
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL,
+  reward_id INTEGER NOT NULL,
+  create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_rewarduser_user FOREIGN KEY (user_id) REFERENCES BaseUser(id),
+  CONSTRAINT fk_rewarduser_reward FOREIGN KEY (reward_id) REFERENCES Reward(id)
+);
 ---- Enumeration for Exercise Type (needs separate table)
 --CREATE TABLE ExersiceType (
 --  id SMALLINT PRIMARY KEY,
