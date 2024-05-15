@@ -31,8 +31,6 @@ services:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
       POSTGRES_DB: db
-    networks:
-      - internal
 
   metabase:
     image: metabase/metabase:latest
@@ -40,8 +38,6 @@ services:
       - database
     ports:
       - 3000:3000
-    networks:
-      - internal
 
 networks:
   internal:

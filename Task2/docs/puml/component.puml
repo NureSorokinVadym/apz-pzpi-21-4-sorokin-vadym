@@ -1,0 +1,39 @@
+@startuml
+
+package Domain {
+    () Structures 
+}
+
+package Application {
+    () UseCases
+}
+
+package "Infrastructure (or Data Provider)" {
+    () Repositories
+}
+
+package "Presentation or Entrypoint" {
+    () Controllers
+    () Views
+}
+
+Views --> Controllers
+Controllers --> UseCases
+UseCases --> Repositories
+UseCases <|-- Structures
+
+
+package Example {
+    () "Main Page View"
+    () "Main Page Handler (Controller)"
+    () "Get Users Use case"
+    () "class UserRepository.GetUsers()"
+    () "User"
+    "Main Page View" --> "Main Page Handler (Controller)"
+    "Main Page Handler (Controller)" --> "Get Users Use case"
+    "Get Users Use case" --> "class UserRepository.GetUsers()"
+    "Get Users Use case" <|-- "User"
+}
+
+
+@enduml

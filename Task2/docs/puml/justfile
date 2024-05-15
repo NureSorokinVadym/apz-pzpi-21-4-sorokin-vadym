@@ -1,3 +1,5 @@
 make: 
     plantuml ./precedents.puml -o ../img/
     plantuml ./server.puml -o ../img/
+    plantuml ./class.puml -o ../img/
+    plantuml ./component.puml -o ../img/
