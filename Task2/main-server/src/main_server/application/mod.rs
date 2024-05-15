@@ -119,4 +119,61 @@ pub mod use_cases {
             .unwrap();
         Ok(())
     }
+
+    pub struct PersonalCreateRequest {
+        pub user_id: i64,
+        pub specification_id: i64,
+    }
+
+    pub async fn create_personal(
+        mut db: postgresql::MutDb,
+        token: &str,
+        personal: PersonalCreateRequest,
+    ) -> Result<(), String> {
+        postgresql::get_user_id(&mut db, token.into())
+            .await
+            .unwrap();
+        postgresql::create_personal(db, personal.user_id, personal.specification_id)
+            .await
+            .unwrap();
+        Ok(())
+    }
+
+    pub async fn create_specification(
+        mut db: postgresql::MutDb,
+        token: &str,
+        name: String,
+    ) -> Result<(), String> {
+        let user_id = postgresql::get_user_id(&mut db, token.into())
+            .await
+            .unwrap();
+        let user_access_level = postgresql::get_admin_access_level(&mut db, user_id).await;
+        if user_access_level.unwrap_or(10) > 5 {
+            return Err("User access level is not enough".to_string());
+        }
+        postgresql::create_specification(db, &name).await.unwrap();
+        Ok(())
+    }
+
+    pub async fn get_specifications(mut db: postgresql::MutDb) -> Vec<(i64, String)> {
+        postgresql::get_specifications(db).await.unwrap()
+    }
+
+    pub async fn give_reward(
+        mut db: postgresql::MutDb,
+        token: &str,
+        user_id: i64,
+        reward: i64,
+    ) -> Result<(), String> {
+        let personal_id = postgresql::get_user_id(&mut db, token.into())
+            .await
+            .unwrap();
+        if !postgresql::is_personal(&mut db, personal_id).await {
+            return Err("User is not personal".to_string());
+        }
+        postgresql::give_reward(&mut db, user_id, reward)
+            .await
+            .unwrap();
+        Ok(())
+    }
 }

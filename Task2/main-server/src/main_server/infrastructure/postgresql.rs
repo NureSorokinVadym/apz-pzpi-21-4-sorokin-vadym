@@ -101,3 +101,49 @@ pub async fn get_admin_access_level(db: &mut MutDb, user_id: i64) -> Result<i8, 
         .await?;
     Ok(row.0)
 }
+
+pub async fn create_personal(
+    mut db: MutDb,
+    user_id: i64,
+    specification_id: i64,
+) -> Result<(), sqlx::Error> {
+    let _result = sqlx::query("insert into personal (user_id, specification_id) values ($1, $2)")
+        .bind(user_id)
+        .bind(specification_id)
+        .execute(&mut **db)
+        .await?;
+    Ok(())
+}
+
+pub async fn create_specification(mut db: MutDb, name: &str) -> Result<(), sqlx::Error> {
+    let _result = sqlx::query("insert into specification (name) values ($1)")
+        .bind(name)
+        .execute(&mut **db)
+        .await?;
+    Ok(())
+}
+
+pub async fn get_specifications(mut db: MutDb) -> Result<Vec<(i64, String)>, sqlx::Error> {
+    let rows: Vec<(i64, String)> = sqlx::query_as("select id, name from specification")
+        .fetch_all(&mut **db)
+        .await?;
+    Ok(rows)
+}
+
+pub async fn is_personal(db: &mut MutDb, user_id: i64) -> bool {
+    let row: Option<_> = sqlx::query("select user_id from personal where user_id = $1")
+        .bind(user_id)
+        .fetch_optional(&mut ***db)
+        .await
+        .unwrap();
+    row.is_some()
+}
+
+pub async fn give_reward(db: &mut MutDb, user_id: i64, reward: i64) -> Result<(), sqlx::Error> {
+    let _result = sqlx::query("insert info reward_user (reward_id, user_id) values ($1, $2)")
+        .bind(reward)
+        .bind(user_id)
+        .execute(&mut ***db)
+        .await?;
+    Ok(())
+}

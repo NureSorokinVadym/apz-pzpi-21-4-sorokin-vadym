@@ -143,6 +143,103 @@ pub mod authorizations {
     }
 }
 
+pub mod personal {
+    pub mod dto {
+        use rocket::serde::{Deserialize, Serialize};
+
+        #[derive(Debug, Serialize, Deserialize)]
+        #[serde(crate = "rocket::serde")]
+        pub struct PersonalCreateRequest {
+            pub user_id: i64,
+            pub specification_id: i64,
+        }
+
+        #[derive(Debug, Serialize, Deserialize)]
+        #[serde(crate = "rocket::serde")]
+        pub struct PersonalCreateResponse {
+            pub message: String,
+        }
+
+        #[derive(Debug, Serialize, Deserialize)]
+        #[serde(crate = "rocket::serde")]
+        pub struct SpecificationListResponse {
+            pub specifications: Vec<(i64, String)>,
+        }
+        #[derive(Debug, Serialize, Deserialize)]
+        #[serde(crate = "rocket::serde")]
+        pub struct SpecificationCreateRequest {
+            pub name: String,
+        }
+
+        #[derive(Debug, Serialize, Deserialize)]
+        #[serde(crate = "rocket::serde")]
+        pub struct SpecificationCreateResponse {
+            pub message: String,
+        }
+    }
+
+    pub mod endpoints {
+        use crate::application::use_cases;
+        use crate::entrypoint::authorizations::token_provider::ApiKey;
+        use crate::infrastructure::postgresql::MutDb;
+        use rocket::serde::json::Json;
+
+        #[post("/create_personal", format = "json", data = "<personal>")]
+        pub async fn create_personal(
+            mut db: MutDb,
+            personal: Json<super::dto::PersonalCreateRequest>,
+            token: ApiKey<'_>,
+        ) -> Json<super::dto::PersonalCreateResponse> {
+            println!("Creating personal: {}", personal.user_id);
+            let result = use_cases::create_personal(
+                db,
+                token.into(),
+                use_cases::PersonalCreateRequest {
+                    user_id: personal.user_id,
+                    specification_id: personal.specification_id,
+                },
+            )
+            .await;
+            Json::from(super::dto::PersonalCreateResponse {
+                message: match result {
+                    Ok(_) => "Personal created".to_string(),
+                    Err(err) => err,
+                },
+            })
+        }
+        #[post("/create_specification", format = "json", data = "<specification>")]
+        pub async fn create_specification(
+            mut db: MutDb,
+            specification: Json<super::dto::SpecificationCreateRequest>,
+            token: ApiKey<'_>,
+        ) -> Json<super::dto::SpecificationCreateResponse> {
+            println!("Creating specification: {}", specification.name);
+            let result =
+                use_cases::create_specification(db, token.into(), specification.name.clone()).await;
+
+            Json::from(super::dto::SpecificationCreateResponse {
+                message: match result {
+                    Ok(_) => "Specification created".to_string(),
+                    Err(err) => err,
+                },
+            })
+        }
+
+        #[get("/specifications")]
+        pub async fn get_specifications(
+            mut db: MutDb,
+        ) -> Json<super::dto::SpecificationListResponse> {
+            let specifications = use_cases::get_specifications(db).await;
+            Json::from(super::dto::SpecificationListResponse { specifications })
+        }
+    }
+
+    use endpoints::{create_personal, create_specification};
+    pub fn get_routes() -> Vec<rocket::Route> {
+        routes![create_personal, create_specification]
+    }
+}
+
 pub mod admin {
     pub mod dto {
         use rocket::serde::{Deserialize, Serialize};
@@ -195,5 +292,50 @@ pub mod admin {
     use endpoints::create_admin;
     pub fn get_routes() -> Vec<rocket::Route> {
         routes![create_admin]
+    }
+}
+
+pub mod user {
+    pub mod dto {
+        use rocket::serde::{Deserialize, Serialize};
+
+        #[derive(Debug, Serialize, Deserialize)]
+        #[serde(crate = "rocket::serde")]
+        pub struct RewardGiveRequest {
+            pub user_id: i64,
+            pub reward_id: i64,
+        }
+
+        #[derive(Debug, Serialize, Deserialize)]
+        #[serde(crate = "rocket::serde")]
+        pub struct RewardGiveResponse {
+            pub message: String,
+        }
+    }
+    pub mod endpoints {
+        use crate::application::use_cases;
+        use crate::entrypoint::authorizations::token_provider::ApiKey;
+        use crate::infrastructure::postgresql::MutDb;
+        use rocket::serde::json::Json;
+
+        #[post("/give_reward", format = "json", data = "<reward>")]
+        pub async fn give_reward(
+            mut db: MutDb,
+            reward: Json<super::dto::RewardGiveRequest>,
+            api_key: ApiKey<'_>,
+        ) -> Json<super::dto::RewardGiveResponse> {
+            println!("Giving reward: {}", reward.user_id);
+            let result =
+                use_cases::give_reward(db, api_key.into(), reward.user_id, reward.reward_id).await;
+            Json::from(super::dto::RewardGiveResponse {
+                message: match result {
+                    Ok(_) => "Reward given".to_string(),
+                    Err(err) => err,
+                },
+            })
+        }
+    }
+    pub fn get_routes() -> Vec<rocket::Route> {
+        routes![endpoints::give_reward]
     }
 }
