@@ -30,7 +30,7 @@ impl UserDTO {
     }
 }
 
-pub async fn create_user(mut db: MutDb, user: UserDTO) -> Result<i64, sqlx::Error> {
+pub async fn create_user(db: &mut MutDb, user: UserDTO) -> Result<i64, sqlx::Error> {
     let result: (i64,) = sqlx::query_as(
         "insert into user_base (email, name, surname, password_hash) values ($1, $2, $3, $4) returning id",
     )
@@ -38,18 +38,18 @@ pub async fn create_user(mut db: MutDb, user: UserDTO) -> Result<i64, sqlx::Erro
     .bind(user.name)
     .bind(user.surname)
     .bind(user.password_hash)
-    .fetch_one(&mut **db)
+    .fetch_one(&mut ***db)
     .await?;
 
     Ok(result.0)
 }
 
-pub async fn get_user_id(db: &DataBaseWraper, email: &str) -> Result<u32, sqlx::Error> {
-    let row: (i32,) = sqlx::query_as("select id from BaseUser where email = $1")
+pub async fn get_user_id(db: &mut MutDb, email: &str) -> Result<i64, sqlx::Error> {
+    let row: (i64,) = sqlx::query_as("select id from BaseUser where email = $1")
         .bind(email)
-        .fetch_one(&db.0)
+        .fetch_one(&mut ***db)
         .await?;
-    Ok(row.0 as u32)
+    Ok(row.0)
 }
 
 pub async fn get_user_with_password(
@@ -79,4 +79,25 @@ pub async fn get_user_info(db: &DataBaseWraper, user_id: i64) -> Result<UserInfo
         surname: row.1,
         email: row.2,
     })
+}
+
+pub async fn create_admin(
+    mut db: MutDb,
+    user_id: i64,
+    access_level: i8,
+) -> Result<(), sqlx::Error> {
+    let _result = sqlx::query("insert into admin (user_id, access_level) values ($1, $2)")
+        .bind(user_id)
+        .bind(access_level)
+        .execute(&mut **db)
+        .await?;
+    Ok(())
+}
+
+pub async fn get_admin_access_level(db: &mut MutDb, user_id: i64) -> Result<i8, sqlx::Error> {
+    let row: (i8,) = sqlx::query_as("select access_level from admin where user_id = $1")
+        .bind(user_id)
+        .fetch_one(&mut ***db)
+        .await?;
+    Ok(row.0)
 }

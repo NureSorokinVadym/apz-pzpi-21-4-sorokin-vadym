@@ -142,3 +142,58 @@ pub mod authorizations {
         routes![log_up, log_in, user_info]
     }
 }
+
+pub mod admin {
+    pub mod dto {
+        use rocket::serde::{Deserialize, Serialize};
+
+        #[derive(Debug, Serialize, Deserialize)]
+        #[serde(crate = "rocket::serde")]
+        pub struct AdminCreateRequest {
+            pub user_id: i64,
+            pub access_level: i8,
+        }
+
+        #[derive(Debug, Serialize, Deserialize)]
+        #[serde(crate = "rocket::serde")]
+        pub struct AdminCreateResponse {
+            pub message: String,
+        }
+    }
+
+    pub mod endpoints {
+        use crate::application::use_cases;
+        use crate::entrypoint::authorizations::token_provider::ApiKey;
+        use crate::infrastructure::postgresql::MutDb;
+        use rocket::serde::json::Json;
+
+        #[post("/create_admin", format = "json", data = "<admin>")]
+        pub async fn create_admin(
+            mut db: MutDb,
+            admin: Json<super::dto::AdminCreateRequest>,
+            api_key: ApiKey<'_>,
+        ) -> Json<super::dto::AdminCreateResponse> {
+            println!("Creating admin: {}", admin.user_id);
+            let result = use_cases::create_admin(
+                db,
+                api_key.into(),
+                use_cases::AdminCreateRequest {
+                    id: admin.user_id,
+                    access_level: admin.access_level,
+                },
+            )
+            .await;
+            match result {
+                Ok(_) => Json::from(super::dto::AdminCreateResponse {
+                    message: "Admin created".to_string(),
+                }),
+                Err(err) => Json::from(super::dto::AdminCreateResponse { message: err }),
+            }
+        }
+    }
+
+    use endpoints::create_admin;
+    pub fn get_routes() -> Vec<rocket::Route> {
+        routes![create_admin]
+    }
+}

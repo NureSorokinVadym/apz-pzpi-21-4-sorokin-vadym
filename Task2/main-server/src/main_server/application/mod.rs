@@ -48,10 +48,10 @@ pub mod use_cases {
     use postgresql::DataBaseWraper;
     use pwhash::bcrypt;
 
-    pub async fn create_user(db: postgresql::MutDb, user: UserCreateRequest) -> i64 {
+    pub async fn create_user(mut db: postgresql::MutDb, user: UserCreateRequest) -> i64 {
         let password_hash = bcrypt::hash(user.password).expect("Password hash error");
         let pg_user = postgresql::UserDTO::new(user.email, user.name, user.surname, password_hash);
-        postgresql::create_user(db, pg_user).await.unwrap()
+        postgresql::create_user(&mut db, pg_user).await.unwrap()
     }
 
     pub struct UserLoginRequest {
@@ -95,5 +95,28 @@ pub mod use_cases {
             name: user.name,
             surname: user.surname,
         }
+    }
+
+    pub struct AdminCreateRequest {
+        pub id: i64,
+        pub access_level: i8,
+    }
+
+    pub async fn create_admin(
+        mut db: postgresql::MutDb,
+        token: &str,
+        admin: AdminCreateRequest,
+    ) -> Result<(), String> {
+        let user_id = postgresql::get_user_id(&mut db, token.into())
+            .await
+            .unwrap();
+        let user_access_level = postgresql::get_admin_access_level(&mut db, user_id).await;
+        if admin.access_level > user_access_level.unwrap_or(10) {
+            return Err("User access level is not enough".to_string());
+        }
+        postgresql::create_admin(db, admin.id, admin.access_level)
+            .await
+            .unwrap();
+        Ok(())
     }
 }
