@@ -1,7 +1,8 @@
 -- User table
-CREATE TABLE BaseUser (
+CREATE TABLE user_base (
   id SERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL UNIQUE,
   surname VARCHAR(255),
   password_hash VARCHAR(255) NOT NULL,
   photo VARCHAR(255),
@@ -18,7 +19,7 @@ CREATE TABLE Personal (
   specification_id INTEGER,
   create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT fk_user_personal FOREIGN KEY (user_id) REFERENCES BaseUser(id)
+  CONSTRAINT fk_user_personal FOREIGN KEY (user_id) REFERENCES user_base(id)
 );
 
 -- Specification table
