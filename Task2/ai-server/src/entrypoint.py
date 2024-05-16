@@ -6,10 +6,11 @@ from . import application, dto
 router = APIRouter()
 
 
-@router.post("/exercises")
-async def create_exercise(exercise: dto.CreateExercise):
+@router.get("/exercises")
+async def create_exercise() -> dto.CreateExercise:
     try:
-        await application.create_exercise(exercise)
+        id = await application.create_exercise()
+        return dto.CreateExercise(id=id)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -19,6 +20,7 @@ async def update_exercise(
     update: dto.UpdateUserExercise, exercise_id: int
 ) -> dto.AIResponse:
     try:
-        return await application.update_exercise(exercise_id, update)
+        await application.update_exercise(exercise_id, update)
+        return await application.create_predict(exercise_id)
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))

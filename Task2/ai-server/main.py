@@ -1,7 +1,6 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
-from psycopg import AsyncConnection
 
 from src import conn_manager, router
 
