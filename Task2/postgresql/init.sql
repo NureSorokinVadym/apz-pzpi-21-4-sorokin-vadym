@@ -30,12 +30,12 @@ CREATE TABLE specification (
 
 -- Admin table (inherits from User)
 CREATE TABLE admin (
-  id INTEGER PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   user_id INTEGER NOT NULL UNIQUE,
   access_level INTEGER,
   create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT fk_admin_user FOREIGN KEY (user_id) REFERENCES BaseUser(id)
+  CONSTRAINT fk_admin_user FOREIGN KEY (user_id) REFERENCES user_base(id)
 );
 
 -- Reward table
@@ -53,12 +53,12 @@ CREATE TABLE reward_user(
   reward_id INTEGER NOT NULL,
   create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   update_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT fk_rewarduser_user FOREIGN KEY (user_id) REFERENCES BaseUser(id),
+  CONSTRAINT fk_rewarduser_user FOREIGN KEY (user_id) REFERENCES user_base(id),
   CONSTRAINT fk_rewarduser_reward FOREIGN KEY (reward_id) REFERENCES Reward(id)
 );
 -- Enumeration for Exercise Type (needs separate table)
 CREATE TABLE exercice_type (
-  id SMALLINT PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -69,7 +69,7 @@ CREATE TABLE exercice (
   measurement VARCHAR(255),
   exercice_type_id INTEGER NOT NULL,
   create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT fk_exercice_exercisetype FOREIGN KEY (exersice_type_id) REFERENCES exercice_type(id)
+  CONSTRAINT fk_exercice_exercisetype FOREIGN KEY (exercice_type_id) REFERENCES exercice_type(id)
 );
 
 -- ExerciseUser table
@@ -108,7 +108,7 @@ CREATE TABLE exercice_user (
 --  chat_id UUID NOT NULL,
 --  text TEXT NOT NULL,
 --  create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
---  CONSTRAINT fk_message_user FOREIGN KEY (from_user_id) REFERENCES BaseUser(id),
+--  CONSTRAINT fk_message_user FOREIGN KEY (from_user_id) REFERENCES user_base(id),
 --  CONSTRAINT fk_message_chat FOREIGN KEY (chat_id) REFERENCES Chat(uuid)
 --);
 --
@@ -116,14 +116,14 @@ CREATE TABLE exercice_user (
 --CREATE TABLE UserPersonal (
 --  user_id INTEGER NOT NULL,
 --  personal_id INTEGER NOT NULL,
---  CONSTRAINT fk_userpersonal_user FOREIGN KEY (user_id) REFERENCES BaseUser(id),
+--  CONSTRAINT fk_userpersonal_user FOREIGN KEY (user_id) REFERENCES user_base(id),
 --  CONSTRAINT fk_userpersonal_personal FOREIGN KEY (personal_id) REFERENCES Personal(id),
 --  PRIMARY KEY (user_id, personal_id)
 --);
 --
 --
 --
----- CREATE TRIGGER update_timestamp BEFORE UPDATE ON BaseUser
+---- CREATE TRIGGER update_timestamp BEFORE UPDATE ON user_base
 ----     FOR EACH ROW EXECUTE PROCEDURE moddatetime(update_at);
 ---- CREATE TRIGGER update_timestamp BEFORE UPDATE ON Personal
 ----     FOR EACH ROW EXECUTE PROCEDURE moddatetime(update_at);

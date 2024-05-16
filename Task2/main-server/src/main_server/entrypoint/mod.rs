@@ -80,11 +80,11 @@ pub mod authorizations {
     }
 
     use crate::application::use_cases;
-    use crate::infrastructure::postgresql::{create_user, DataBaseWraper, MutDb, UserDTO};
+    use crate::infrastructure::postgresql::{DataBaseWraper, MutDb};
 
     #[post("/log_up", format = "json", data = "<log_up>")]
     pub async fn log_up(
-        mut db: MutDb,
+        db: MutDb,
         log_up: Json<dto::LogUpDtoRequest>,
     ) -> Json<dto::LogUpDtoResponse> {
         println!("Creating user: {}", log_up.email);
@@ -150,8 +150,8 @@ pub mod personal {
         #[derive(Debug, Serialize, Deserialize)]
         #[serde(crate = "rocket::serde")]
         pub struct PersonalCreateRequest {
-            pub user_id: i64,
-            pub specification_id: i64,
+            pub user_id: i32,
+            pub specification_id: i32,
         }
 
         #[derive(Debug, Serialize, Deserialize)]
@@ -163,7 +163,7 @@ pub mod personal {
         #[derive(Debug, Serialize, Deserialize)]
         #[serde(crate = "rocket::serde")]
         pub struct SpecificationListResponse {
-            pub specifications: Vec<(i64, String)>,
+            pub specifications: Vec<(i32, String)>,
         }
         #[derive(Debug, Serialize, Deserialize)]
         #[serde(crate = "rocket::serde")]
@@ -186,14 +186,12 @@ pub mod personal {
 
         #[post("/create_personal", format = "json", data = "<personal>")]
         pub async fn create_personal(
-            mut db: MutDb,
+            db: MutDb,
             personal: Json<super::dto::PersonalCreateRequest>,
-            token: ApiKey<'_>,
         ) -> Json<super::dto::PersonalCreateResponse> {
             println!("Creating personal: {}", personal.user_id);
             let result = use_cases::create_personal(
                 db,
-                token.into(),
                 use_cases::PersonalCreateRequest {
                     user_id: personal.user_id,
                     specification_id: personal.specification_id,
@@ -209,7 +207,7 @@ pub mod personal {
         }
         #[post("/create_specification", format = "json", data = "<specification>")]
         pub async fn create_specification(
-            mut db: MutDb,
+            db: MutDb,
             specification: Json<super::dto::SpecificationCreateRequest>,
             token: ApiKey<'_>,
         ) -> Json<super::dto::SpecificationCreateResponse> {
@@ -226,17 +224,15 @@ pub mod personal {
         }
 
         #[get("/specifications")]
-        pub async fn get_specifications(
-            mut db: MutDb,
-        ) -> Json<super::dto::SpecificationListResponse> {
+        pub async fn get_specifications(db: MutDb) -> Json<super::dto::SpecificationListResponse> {
             let specifications = use_cases::get_specifications(db).await;
             Json::from(super::dto::SpecificationListResponse { specifications })
         }
     }
 
-    use endpoints::{create_personal, create_specification};
+    use endpoints::{create_personal, create_specification, get_specifications};
     pub fn get_routes() -> Vec<rocket::Route> {
-        routes![create_personal, create_specification]
+        routes![create_personal, create_specification, get_specifications]
     }
 }
 
@@ -247,8 +243,8 @@ pub mod admin {
         #[derive(Debug, Serialize, Deserialize)]
         #[serde(crate = "rocket::serde")]
         pub struct AdminCreateRequest {
-            pub user_id: i64,
-            pub access_level: i8,
+            pub user_id: i32,
+            pub access_level: i32,
         }
 
         #[derive(Debug, Serialize, Deserialize)]
@@ -266,7 +262,7 @@ pub mod admin {
 
         #[post("/create_admin", format = "json", data = "<admin>")]
         pub async fn create_admin(
-            mut db: MutDb,
+            db: MutDb,
             admin: Json<super::dto::AdminCreateRequest>,
             api_key: ApiKey<'_>,
         ) -> Json<super::dto::AdminCreateResponse> {
@@ -302,8 +298,8 @@ pub mod user {
         #[derive(Debug, Serialize, Deserialize)]
         #[serde(crate = "rocket::serde")]
         pub struct RewardGiveRequest {
-            pub user_id: i64,
-            pub reward_id: i64,
+            pub user_id: i32,
+            pub reward_id: i32,
         }
 
         #[derive(Debug, Serialize, Deserialize)]
@@ -317,7 +313,7 @@ pub mod user {
         pub struct CreateExerciceRequest {
             pub name: String,
             pub measurement: String,
-            pub exercice_type_id: i64,
+            pub exercice_type_id: i32,
         }
 
         #[derive(Debug, Serialize, Deserialize)]
@@ -329,14 +325,39 @@ pub mod user {
         #[derive(Debug, Serialize, Deserialize)]
         #[serde(crate = "rocket::serde")]
         pub struct ExerciceListResponse {
-            pub exercices: Vec<(i64, String)>,
+            pub exercices: Vec<(i32, String)>,
         }
 
         #[derive(Debug, Serialize, Deserialize)]
         #[serde(crate = "rocket::serde")]
         pub struct ExerciceGiveRequest {
-            pub user_id: i64,
-            pub exercice_id: i64,
+            pub user_id: i32,
+            pub exercice_id: i32,
+        }
+
+        #[derive(Debug, Serialize, Deserialize)]
+        #[serde(crate = "rocket::serde")]
+        pub struct CreateExerciceTypeRequest {
+            pub name: String,
+        }
+
+        #[derive(Debug, Serialize, Deserialize)]
+        #[serde(crate = "rocket::serde")]
+        pub struct CreateExerciceTypeResponse {
+            pub message: String,
+        }
+
+        #[derive(Debug, Serialize, Deserialize)]
+        #[serde(crate = "rocket::serde")]
+        pub struct RewardCreateRequest {
+            pub name: String,
+            pub condition: String,
+        }
+
+        #[derive(Debug, Serialize, Deserialize)]
+        #[serde(crate = "rocket::serde")]
+        pub struct RewardCreateResponse {
+            pub message: String,
         }
     }
     pub mod endpoints {
@@ -347,7 +368,7 @@ pub mod user {
 
         #[post("/give_reward", format = "json", data = "<reward>")]
         pub async fn give_reward(
-            mut db: MutDb,
+            db: MutDb,
             reward: Json<super::dto::RewardGiveRequest>,
             api_key: ApiKey<'_>,
         ) -> Json<super::dto::RewardGiveResponse> {
@@ -364,7 +385,7 @@ pub mod user {
 
         #[post("/create_exercice", format = "json", data = "<exercice>")]
         pub async fn create_exercice(
-            mut db: MutDb,
+            db: MutDb,
             exercice: Json<super::dto::CreateExerciceRequest>,
             api_key: ApiKey<'_>,
         ) -> Json<super::dto::CreateExerciceResponse> {
@@ -387,29 +408,62 @@ pub mod user {
             })
         }
 
+        #[post("/create_exercice_type", format = "json", data = "<exercice_type>")]
+        pub async fn create_exercice_type(
+            db: MutDb,
+            exercice_type: Json<super::dto::CreateExerciceTypeRequest>,
+            api_key: ApiKey<'_>,
+        ) -> Json<super::dto::CreateExerciceTypeResponse> {
+            println!("Creating exercice type: {}", exercice_type.name);
+            let result =
+                use_cases::create_exercice_type(db, api_key.into(), exercice_type.name.clone())
+                    .await;
+            Json::from(super::dto::CreateExerciceTypeResponse {
+                message: match result {
+                    Ok(_) => "Exercice type created".to_string(),
+                    Err(err) => err,
+                },
+            })
+        }
+
         #[get("/exercices")]
-        pub async fn get_exercices(mut db: MutDb) -> Json<super::dto::ExerciceListResponse> {
+        pub async fn get_exercices(db: MutDb) -> Json<super::dto::ExerciceListResponse> {
             let exercices = use_cases::get_exercices(db).await;
             Json::from(super::dto::ExerciceListResponse { exercices })
         }
 
         #[post("/give_exercice", format = "json", data = "<exercice>")]
         pub async fn give_exercice(
-            mut db: MutDb,
+            db: MutDb,
             exercice: Json<super::dto::ExerciceGiveRequest>,
-            api_key: ApiKey<'_>,
         ) -> Json<super::dto::RewardGiveResponse> {
             println!("Giving exercice: {}", exercice.user_id);
-            let result = use_cases::give_exercice(
-                db,
-                api_key.into(),
-                exercice.user_id,
-                exercice.exercice_id,
-            )
-            .await;
+            let result = use_cases::give_exercice(db, exercice.user_id, exercice.exercice_id).await;
             Json::from(super::dto::RewardGiveResponse {
                 message: match result {
                     Ok(_) => "Exercice given".to_string(),
+                    Err(err) => err,
+                },
+            })
+        }
+
+        #[post("/create_reward", format = "json", data = "<reward>")]
+        pub async fn create_reward(
+            db: MutDb,
+            reward: Json<super::dto::RewardCreateRequest>,
+            api_key: ApiKey<'_>,
+        ) -> Json<super::dto::RewardCreateResponse> {
+            println!("Creating reward: {}", reward.name);
+            let result = use_cases::create_reward(
+                db,
+                api_key.into(),
+                reward.name.clone(),
+                reward.condition.clone(),
+            )
+            .await;
+            Json::from(super::dto::RewardCreateResponse {
+                message: match result {
+                    Ok(_) => "Reward created".to_string(),
                     Err(err) => err,
                 },
             })
@@ -421,7 +475,9 @@ pub mod user {
             endpoints::give_reward,
             endpoints::create_exercice,
             endpoints::get_exercices,
-            endpoints::give_exercice
+            endpoints::give_exercice,
+            endpoints::create_exercice_type,
+            endpoints::create_reward
         ]
     }
 }
