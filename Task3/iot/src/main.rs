@@ -36,18 +36,11 @@ impl Sensors {
         self.pulse += thread_rng().gen_range(-2..3);
         self.temperature += thread_rng().gen_range(-0.05..0.1);
     }
-
-    fn to_json(&self) -> ureq::serde_json::Value {
-        ureq::json!({
-            "pulse": self.pulse,
-            "temperature": self.temperature
-        })
-    }
 }
 
 const TOKEN: &str = create_jwt!();
 
-fn main() -> Result<(), ureq::Error> {
+fn main_process() -> Result<(), ureq::Error> {
     let mut sensors = Sensors::new();
 
     let resp: CreateResponse = ureq::get("http://localhost/ai/exercises")
@@ -58,11 +51,28 @@ fn main() -> Result<(), ureq::Error> {
     loop {
         let response: AIResponse = ureq::put(&format!("http://localhost/ai/exercises/{}", resp.id))
             .set("Authorization", &format!("Bearer {}", TOKEN))
-            .send_json(sensors.to_json())?
+            .send_json(ureq::json!({
+                "user_state": {
+                    "pulse": sensors.pulse,
+                    "temperature": sensors.temperature,
+                }
+            }))?
             .into_json()?;
 
         println!("Continue for {}", response.will_continue);
         sensors.update();
         sleep(Duration::from_secs(1));
+    }
+}
+
+fn main() {
+    loop {
+        match main_process() {
+            Ok(_) => break,
+            Err(e) => {
+                println!("Error: {}", e);
+                sleep(Duration::from_secs(2));
+            }
+        }
     }
 }
