@@ -1,8 +1,17 @@
-import fastapi
+from contextlib import asynccontextmanager
 
-app = fastapi.FastAPI()
+from fastapi import FastAPI
+from psycopg import AsyncConnection
+
+from src import conn_manager, router
 
 
-@app.get("/")
-def index():
-    return {"message": "Hello, World"}
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await conn_manager.create()
+    yield
+    await conn_manager.close()
+
+
+app = FastAPI(lifespan=lifespan)
+app.include_router(router)
