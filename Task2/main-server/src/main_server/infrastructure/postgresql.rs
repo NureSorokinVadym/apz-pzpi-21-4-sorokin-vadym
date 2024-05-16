@@ -147,3 +147,46 @@ pub async fn give_reward(db: &mut MutDb, user_id: i64, reward: i64) -> Result<()
         .await?;
     Ok(())
 }
+
+pub struct ExerciceCreateRequest {
+    pub name: String,
+    pub measurement: String,
+    pub exercice_type_id: i64,
+}
+
+pub async fn create_exercice(
+    db: &mut MutDb,
+    name: &str,
+    measurement: &str,
+    exercice_type_id: i64,
+) -> Result<(), sqlx::Error> {
+    let _result = sqlx::query(
+        "insert into exercice (name, measurement, exercice_type_id) values ($1, $2, $3)",
+    )
+    .bind(name)
+    .bind(measurement)
+    .bind(exercice_type_id)
+    .execute(&mut ***db)
+    .await?;
+    Ok(())
+}
+
+pub async fn get_exercices(db: &mut MutDb) -> Result<Vec<(i64, String)>, sqlx::Error> {
+    let rows: Vec<(i64, String)> = sqlx::query_as("select id, name from exercice")
+        .fetch_all(&mut ***db)
+        .await?;
+    Ok(rows)
+}
+
+pub async fn give_exercice(
+    db: &mut MutDb,
+    user_id: i64,
+    exercice_id: i64,
+) -> Result<(), sqlx::Error> {
+    let _result = sqlx::query("insert into user_exercice (user_id, exercice_id) values ($1, $2)")
+        .bind(user_id)
+        .bind(exercice_id)
+        .execute(&mut ***db)
+        .await?;
+    Ok(())
+}

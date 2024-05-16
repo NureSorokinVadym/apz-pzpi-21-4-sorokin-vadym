@@ -176,4 +176,51 @@ pub mod use_cases {
             .unwrap();
         Ok(())
     }
+
+    pub struct ExerciceCreateRequest {
+        pub name: String,
+        pub measurement: String,
+        pub exercice_type_id: i64,
+    }
+
+    pub async fn create_exercice(
+        mut db: postgresql::MutDb,
+        token: &str,
+        exercice: ExerciceCreateRequest,
+    ) -> Result<(), String> {
+        let user_id = postgresql::get_user_id(&mut db, token.into())
+            .await
+            .unwrap();
+        let user_access_level = postgresql::get_admin_access_level(&mut db, user_id)
+            .await
+            .unwrap();
+        if user_access_level > 2 {
+            return Err("User access level is not enough".to_string());
+        }
+        postgresql::create_exercice(
+            &mut db,
+            &exercice.name,
+            &exercice.measurement,
+            exercice.exercice_type_id,
+        )
+        .await
+        .unwrap();
+        Ok(())
+    }
+
+    pub async fn get_exercices(mut db: postgresql::MutDb) -> Vec<(i64, String)> {
+        postgresql::get_exercices(&mut db).await.unwrap()
+    }
+
+    pub async fn give_exercice(
+        mut db: postgresql::MutDb,
+        token: &str,
+        user_id: i64,
+        exercice_id: i64,
+    ) -> Result<(), String> {
+        postgresql::give_exercice(&mut db, user_id, exercice_id)
+            .await
+            .unwrap();
+        Ok(())
+    }
 }

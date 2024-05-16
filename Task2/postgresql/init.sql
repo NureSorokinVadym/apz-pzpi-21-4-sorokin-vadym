@@ -56,37 +56,37 @@ CREATE TABLE reward_user(
   CONSTRAINT fk_rewarduser_user FOREIGN KEY (user_id) REFERENCES BaseUser(id),
   CONSTRAINT fk_rewarduser_reward FOREIGN KEY (reward_id) REFERENCES Reward(id)
 );
----- Enumeration for Exercise Type (needs separate table)
---CREATE TABLE ExersiceType (
---  id SMALLINT PRIMARY KEY,
---  name VARCHAR(255) NOT NULL,
---  create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
---);
----- Exercise table
---CREATE TABLE Exersice (
---  id SERIAL PRIMARY KEY,
---  name VARCHAR(255) NOT NULL,
---  measurement VARCHAR(255),
---  exersice_type_id INTEGER NOT NULL,
---  create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
---  CONSTRAINT fk_exersice_exercisetype FOREIGN KEY (exersice_type_id) REFERENCES ExersiceType(id)
---);
---
----- ExerciseUser table
---CREATE TABLE ExersiceUser (
---  id SERIAL PRIMARY KEY,
---  exersice_id INTEGER NOT NULL,
---  user_id INTEGER NOT NULL,
---  duration INTEGER,
---  number INTEGER,
---  weight INTEGER,
---  pulse INTEGER,
---  heard_rate INTEGER,
---  create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
---  CONSTRAINT fk_exerciseuser_exercise FOREIGN KEY (exersice_id) REFERENCES Exersice(id),
---  CONSTRAINT fk_exerciseuser_user FOREIGN KEY (user_id) REFERENCES BaseUser(id)
---);
---
+-- Enumeration for Exercise Type (needs separate table)
+CREATE TABLE exercice_type (
+  id SMALLINT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+-- Exercise table
+CREATE TABLE exercice (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  measurement VARCHAR(255),
+  exercice_type_id INTEGER NOT NULL,
+  create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_exercice_exercisetype FOREIGN KEY (exersice_type_id) REFERENCES exercice_type(id)
+);
+
+-- ExerciseUser table
+CREATE TABLE exercice_user (
+  id SERIAL PRIMARY KEY,
+  exercice_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL,
+  duration INTEGER,
+  number INTEGER,
+  weight INTEGER,
+  pulse INTEGER,
+  heard_rate INTEGER,
+  create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_exerciseuser_exercise FOREIGN KEY (exercice_id) REFERENCES Exercice(id),
+  CONSTRAINT fk_exerciseuser_user FOREIGN KEY (user_id) REFERENCES user_base(id)
+);
+
 --
 --
 --CREATE TYPE ChatType AS ENUM ('private', 'group', 'channel');
