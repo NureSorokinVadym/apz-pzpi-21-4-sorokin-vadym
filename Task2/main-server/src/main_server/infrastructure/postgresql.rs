@@ -1,3 +1,4 @@
+use crate::domain::dto::*;
 use rocket_db_pools::{sqlx, Connection, Database, Initializer};
 
 #[derive(Database)]
@@ -85,13 +86,13 @@ pub async fn create_admin(
     mut db: MutDb,
     user_id: i32,
     access_level: i32,
-) -> Result<(), sqlx::Error> {
+) -> Result<i32, sqlx::Error> {
     let _result = sqlx::query("insert into admin (user_id, access_level) values ($1, $2)")
         .bind(user_id)
         .bind(access_level)
         .execute(&mut **db)
         .await?;
-    Ok(())
+    Ok(10)
 }
 
 pub async fn get_admin_access_level(db: &mut MutDb, user_id: i32) -> Result<i32, sqlx::Error> {
@@ -115,9 +116,12 @@ pub async fn create_personal(
     Ok(())
 }
 
-pub async fn create_specification(mut db: MutDb, name: &str) -> Result<(), sqlx::Error> {
+pub async fn create_specification(
+    mut db: MutDb,
+    specification: &Specification,
+) -> Result<(), sqlx::Error> {
     let _result = sqlx::query("insert into specification (name) values ($1)")
-        .bind(name)
+        .bind(&specification.name)
         .execute(&mut **db)
         .await?;
     Ok(())

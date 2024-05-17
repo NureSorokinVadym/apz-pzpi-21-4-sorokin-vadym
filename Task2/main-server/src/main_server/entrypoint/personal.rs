@@ -1,35 +1,25 @@
 pub mod endpoints {
-    use crate::application::use_cases;
-    use crate::entrypoint::authentication::jwt_provider::ApiKey;
+    use crate::application::personal as use_cases;
+    use crate::entrypoint::{ApiKey, Json};
     use crate::infrastructure::postgresql::MutDb;
-    use rocket::serde::json::Json;
 
     use crate::domain::dto::*;
 
     #[post("/create_personal", format = "json", data = "<personal>")]
     pub async fn create_personal(db: MutDb, personal: Json<Personal>) -> Json<DefaultResponse> {
         println!("Creating personal: {}", personal.user_id);
-        let result = use_cases::create_personal(
-            db,
-            use_cases::PersonalCreateRequest {
-                user_id: personal.user_id,
-                specification_id: personal.specification_id,
-            },
-        )
-        .await;
-        Json::from(DefaultResponse::new(result.unwrap_or(|err| err)))
+        let result = use_cases::create_personal(db, &personal).await;
+        Json::from(DefaultResponse::from(result))
     }
     #[post("/create_specification", format = "json", data = "<specification>")]
     pub async fn create_specification(
         db: MutDb,
-        specification: Json<Specification>,
         token: ApiKey<'_>,
+        specification: Json<Specification>,
     ) -> Json<DefaultResponse> {
         println!("Creating specification: {}", specification.name);
-        let result =
-            use_cases::create_specification(db, token.into(), specification.name.clone()).await;
-
-        Json::from(DefaultResponse::new(result.unwrap_or(|err| err)))
+        let result = use_cases::create_specification(db, token.into(), &specification).await;
+        Json::from(DefaultResponse::from(result))
     }
 
     #[get("/specifications")]

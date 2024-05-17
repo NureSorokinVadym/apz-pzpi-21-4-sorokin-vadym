@@ -20,7 +20,7 @@ async fn rocket() -> _ {
         .allow_credentials(true);
 
     rocket::build()
-        .mount("/auth/", api::authorizations::get_routes())
+        .mount("/auth/", api::authentication::get_routes())
         .mount("/personal", api::personal::get_routes())
         .mount("/admin", api::admin::get_routes())
         .mount("/user", api::user::get_routes())

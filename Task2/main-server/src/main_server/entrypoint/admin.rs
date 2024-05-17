@@ -1,8 +1,7 @@
 pub mod endpoints {
-    use crate::application::use_cases;
-    use crate::entrypoint::authentication::jwt_provider::ApiKey;
+    use crate::application::admin as use_cases;
+    use crate::entrypoint::{ApiKey, Json};
     use crate::infrastructure::postgresql::MutDb;
-    use rocket::serde::json::Json;
 
     use crate::domain::dto::*;
 
@@ -13,16 +12,8 @@ pub mod endpoints {
         api_key: ApiKey<'_>,
     ) -> Json<DefaultResponse> {
         println!("Creating admin: {}", admin.user_id);
-        let result = use_cases::create_admin(
-            db,
-            api_key.into(),
-            use_cases::AdminCreateRequest {
-                id: admin.user_id,
-                access_level: admin.access_level,
-            },
-        )
-        .await;
-        Json::from(DefaultResponse::new(result.unwrap_or_else(|err| err)))
+        let result = use_cases::create_admin(db, api_key.into(), &admin).await;
+        Json::from(DefaultResponse::from(result))
     }
 }
 

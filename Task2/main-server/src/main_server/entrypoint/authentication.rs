@@ -35,9 +35,10 @@ pub mod jwt_provider {
     }
 }
 
-use crate::application::use_cases;
 use crate::domain::dto::*;
 use crate::infrastructure::postgresql::{DataBaseWraper, MutDb};
+
+use crate::application::{authentication as auth, user as use_cases};
 
 #[post("/log_up", format = "json", data = "<log_up>")]
 pub async fn log_up(db: MutDb, log_up: Json<User>) -> Json<String> {
@@ -52,7 +53,7 @@ pub async fn log_up(db: MutDb, log_up: Json<User>) -> Json<String> {
     //let user_id = use_cases::create_user(db, user_create_request).await;
     todo!("Implement creating user");
     let user_id = 0;
-    Json::from(use_cases::authorizations::create_token(user_id))
+    Json::from(auth::create_token(user_id))
 }
 
 #[post("/log_in", format = "json", data = "<log_in>")]
@@ -69,8 +70,8 @@ pub async fn log_in(db: &DataBaseWraper, log_in: Json<User>) -> Json<String> {
 
 #[get("/user_info")]
 pub async fn user_info(db: &DataBaseWraper, api_key: jwt_provider::ApiKey<'_>) -> Json<User> {
-    let user = use_cases::get_user_info(db, api_key.into()).await;
-    Json::from(User::new_basic(user.email, user.name, user.surname))
+    let user = use_cases::get_user_info(db, api_key.into()).await.unwrap();
+    Json::from(user)
 }
 
 pub fn get_routes() -> Vec<rocket::Route> {

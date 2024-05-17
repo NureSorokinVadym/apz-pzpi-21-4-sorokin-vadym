@@ -20,6 +20,15 @@ impl DefaultResponse {
     }
 }
 
+impl From<Result<i32, String>> for DefaultResponse {
+    fn from(result: Result<i32, String>) -> Self {
+        match result {
+            Ok(id) => DefaultResponse::new_with_id(id, "Success".to_string()),
+            Err(message) => DefaultResponse::new(message),
+        }
+    }
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(crate = "rocket::serde")]
 pub struct UserRewardPair {
@@ -30,7 +39,7 @@ pub struct UserRewardPair {
 #[serde(crate = "rocket::serde")]
 pub struct UserExercisePair {
     pub user_id: Option<i32>,
-    pub exercice_id: i32,
+    pub exercise_id: i32,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

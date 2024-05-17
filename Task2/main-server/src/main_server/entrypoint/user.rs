@@ -1,8 +1,7 @@
 pub mod endpoints {
-    use crate::application::use_cases;
-    use crate::entrypoint::authentication::jwt_provider::ApiKey;
+    use crate::application::user as use_cases;
+    use crate::entrypoint::{ApiKey, Json};
     use crate::infrastructure::postgresql::MutDb;
-    use rocket::serde::json::Json;
 
     use crate::domain::dto::*;
 
@@ -13,48 +12,30 @@ pub mod endpoints {
         api_key: ApiKey<'_>,
     ) -> Json<DefaultResponse> {
         println!("Giving reward: {:?}", reward.user_id);
-        let result = use_cases::give_reward(
-            db,
-            api_key.into(),
-            reward.user_id.unwrap(),
-            reward.reward_id,
-        )
-        .await;
-        Json::from(DefaultResponse::new(
-            result.unwrap_or_else(|err| err.to_string()),
-        ))
+        let result = use_cases::give_reward(db, api_key.into(), &reward).await;
+        Json::from(DefaultResponse::from(result))
     }
 
-    #[post("/create_exercice", format = "json", data = "<exercice>")]
+    #[post("/create_exercice", format = "json", data = "<exercise>")]
     pub async fn create_exercice(
         db: MutDb,
-        exercice: Json<Exercise>,
+        exercise: Json<Exercise>,
         api_key: ApiKey<'_>,
     ) -> Json<DefaultResponse> {
-        println!("Creating exercice: {}", exercice.name);
-        let result = use_cases::create_exercice(
-            db,
-            api_key.into(),
-            use_cases::ExerciceCreateRequest {
-                name: exercice.name.clone(),
-                measurement: exercice.measurement.clone(),
-                exercice_type_id: exercice.exercice_type_id,
-            },
-        )
-        .await;
-        Json::from(DefaultResponse::new(result.unwrap_or_else(|err| err)))
+        println!("Creating exercice: {}", exercise.name);
+        let result = use_cases::create_exercice(db, api_key.into(), &exercise).await;
+        Json::from(DefaultResponse::from(result))
     }
 
-    #[post("/create_exercice_type", format = "json", data = "<exercice_type>")]
+    #[post("/create_exercice_type", format = "json", data = "<exercise_type>")]
     pub async fn create_exercice_type(
         db: MutDb,
-        exercice_type: Json<ExerciceType>,
+        exercise_type: Json<ExerciceType>,
         api_key: ApiKey<'_>,
     ) -> Json<DefaultResponse> {
-        println!("Creating exercice type: {}", exercice_type.name);
-        let result =
-            use_cases::create_exercice_type(db, api_key.into(), exercice_type.name.clone()).await;
-        Json::from(DefaultResponse::new(result.unwrap_or_else(|err| err)))
+        println!("Creating exercice type: {}", exercise_type.name);
+        let result = use_cases::create_exercise_type(db, api_key.into(), &exercise_type).await;
+        Json::from(DefaultResponse::from(result))
     }
 
     #[get("/exercices")]
@@ -63,43 +44,37 @@ pub mod endpoints {
         Json::from(exercices)
     }
 
-    #[post("/give_exercice", format = "json", data = "<exercice>")]
+    #[post("/give_exercice", format = "json", data = "<exercise_user>")]
     pub async fn give_exercice(
         db: MutDb,
-        exercice: Json<DefaultResponse>,
+        token: ApiKey<'_>,
+        exercise_user: Json<UserExercisePair>,
     ) -> Json<DefaultResponse> {
-        println!("Giving exercice: {}", exercice.user_id);
-        let result = use_cases::give_exercice(db, exercice.user_id, exercice.exercice_id).await;
-        Json::from(DefaultResponse::new(result.unwrap_or_else(|err| err)))
+        println!("Giving exercice: {}", exercise_user.exercise_id);
+        let result = use_cases::give_exercice(db, token.into(), &exercise_user).await;
+        Json::from(DefaultResponse::from(result))
     }
 
-    #[post("/give_me_exercise", format = "json", data = "<exercice>")]
+    #[post("/give_me_exercise", format = "json", data = "<user_exercise>")]
     pub async fn give_me_exercise(
         db: MutDb,
-        exercice: Json<UserExercisePair>,
         token: ApiKey<'_>,
+        user_exercise: Json<UserExercisePair>,
     ) -> Json<DefaultResponse> {
-        println!("Giving exercice: {}", exercice.exercise_id);
-        let user_id = use_cases::authorizations::validate_token(token.into()).unwrap();
-        let result = use_cases::give_exercice(db, user_id, exercice.exercise_id).await;
-        Json::from(DefaultResponse::new(result.unwrap_or_else(|err| err)))
+        println!("Giving exercice: {}", user_exercise.exercise_id);
+        let result = use_cases::give_exercice(db, token.into(), &user_exercise).await;
+        Json::from(DefaultResponse::from(result))
     }
 
     #[post("/create_reward", format = "json", data = "<reward>")]
     pub async fn create_reward(
         db: MutDb,
-        reward: Json<Reward>,
         api_key: ApiKey<'_>,
+        reward: Json<Reward>,
     ) -> Json<DefaultResponse> {
         println!("Creating reward: {}", reward.name);
-        let result = use_cases::create_reward(
-            db,
-            api_key.into(),
-            reward.name.clone(),
-            reward.condition.clone(),
-        )
-        .await;
-        Json::from(DefaultResponse::new(result.unwrap_or_else(|err| err)))
+        let result = use_cases::create_reward(db, api_key.into(), &reward).await;
+        Json::from(DefaultResponse::from(result))
     }
 }
 
