@@ -14,10 +14,18 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
+AuthInfo _$AuthInfoFromJson(Map<String, dynamic> json) {
+  return _AuthInfo.fromJson(json);
+}
+
 /// @nodoc
 mixin _$AuthInfo {
   String get token => throw _privateConstructorUsedError;
+  String? get email => throw _privateConstructorUsedError;
+  String? get name => throw _privateConstructorUsedError;
+  String? get surname => throw _privateConstructorUsedError;
 
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $AuthInfoCopyWith<AuthInfo> get copyWith =>
       throw _privateConstructorUsedError;
@@ -28,7 +36,7 @@ abstract class $AuthInfoCopyWith<$Res> {
   factory $AuthInfoCopyWith(AuthInfo value, $Res Function(AuthInfo) then) =
       _$AuthInfoCopyWithImpl<$Res, AuthInfo>;
   @useResult
-  $Res call({String token});
+  $Res call({String token, String? email, String? name, String? surname});
 }
 
 /// @nodoc
@@ -45,12 +53,27 @@ class _$AuthInfoCopyWithImpl<$Res, $Val extends AuthInfo>
   @override
   $Res call({
     Object? token = null,
+    Object? email = freezed,
+    Object? name = freezed,
+    Object? surname = freezed,
   }) {
     return _then(_value.copyWith(
       token: null == token
           ? _value.token
           : token // ignore: cast_nullable_to_non_nullable
               as String,
+      email: freezed == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String?,
+      name: freezed == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String?,
+      surname: freezed == surname
+          ? _value.surname
+          : surname // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -63,7 +86,7 @@ abstract class _$$AuthInfoImplCopyWith<$Res>
       __$$AuthInfoImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String token});
+  $Res call({String token, String? email, String? name, String? surname});
 }
 
 /// @nodoc
@@ -78,27 +101,52 @@ class __$$AuthInfoImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? token = null,
+    Object? email = freezed,
+    Object? name = freezed,
+    Object? surname = freezed,
   }) {
     return _then(_$AuthInfoImpl(
       token: null == token
           ? _value.token
           : token // ignore: cast_nullable_to_non_nullable
               as String,
+      email: freezed == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String?,
+      name: freezed == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String?,
+      surname: freezed == surname
+          ? _value.surname
+          : surname // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$AuthInfoImpl implements _AuthInfo {
-  const _$AuthInfoImpl({required this.token});
+  const _$AuthInfoImpl(
+      {required this.token, this.email, this.name, this.surname});
+
+  factory _$AuthInfoImpl.fromJson(Map<String, dynamic> json) =>
+      _$$AuthInfoImplFromJson(json);
 
   @override
   final String token;
+  @override
+  final String? email;
+  @override
+  final String? name;
+  @override
+  final String? surname;
 
   @override
   String toString() {
-    return 'AuthInfo(token: $token)';
+    return 'AuthInfo(token: $token, email: $email, name: $name, surname: $surname)';
   }
 
   @override
@@ -106,24 +154,48 @@ class _$AuthInfoImpl implements _AuthInfo {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$AuthInfoImpl &&
-            (identical(other.token, token) || other.token == token));
+            (identical(other.token, token) || other.token == token) &&
+            (identical(other.email, email) || other.email == email) &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.surname, surname) || other.surname == surname));
   }
 
+  @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, token);
+  int get hashCode => Object.hash(runtimeType, token, email, name, surname);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$AuthInfoImplCopyWith<_$AuthInfoImpl> get copyWith =>
       __$$AuthInfoImplCopyWithImpl<_$AuthInfoImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$AuthInfoImplToJson(
+      this,
+    );
+  }
 }
 
 abstract class _AuthInfo implements AuthInfo {
-  const factory _AuthInfo({required final String token}) = _$AuthInfoImpl;
+  const factory _AuthInfo(
+      {required final String token,
+      final String? email,
+      final String? name,
+      final String? surname}) = _$AuthInfoImpl;
+
+  factory _AuthInfo.fromJson(Map<String, dynamic> json) =
+      _$AuthInfoImpl.fromJson;
 
   @override
   String get token;
+  @override
+  String? get email;
+  @override
+  String? get name;
+  @override
+  String? get surname;
   @override
   @JsonKey(ignore: true)
   _$$AuthInfoImplCopyWith<_$AuthInfoImpl> get copyWith =>

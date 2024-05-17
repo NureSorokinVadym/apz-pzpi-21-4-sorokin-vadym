@@ -9,6 +9,7 @@ part 'router.g.dart';
 @riverpod
 GoRouter router(RouterRef ref) {
   final routerKey = GlobalKey<NavigatorState>(debugLabel: 'routerState');
+  final shellKey = GlobalKey<NavigatorState>(debugLabel: 'shellState');
   final isAuth = ValueNotifier(const AsyncValue.data(false));
   ref
     ..listen(
@@ -19,9 +20,6 @@ GoRouter router(RouterRef ref) {
           data: (value) => value != null,
           loading: () => false,
           error: (_, __) => false));
-      print("Hello from update with state: $state\n and nextValue: $nextValue");
-      print("isAuth: ${isAuth.value}");
-      print("isAuth: ${isAuth.value.requireValue}");
     })
     ..onDispose(isAuth.dispose);
 
@@ -30,28 +28,37 @@ GoRouter router(RouterRef ref) {
     initialLocation: '/',
     refreshListenable: isAuth,
     redirect: (context, state) {
-      print("State: ${state.fullPath}");
-      if (isAuth.value.requireValue && state.fullPath == "/") {
-        return "/second";
-      }
-      if (!isAuth.value.requireValue && state.fullPath != "/") {
-        return "/";
-      }
+      final authValue = isAuth.value.requireValue;
+      final isLogin = state.fullPath == "/login";
+
+      if (authValue && isLogin) return "/";
+      if (!authValue && !isLogin) return "/login";
       return null;
     },
     routes: [
       GoRoute(
         path: '/',
+        name: 'home',
         builder: (context, state) => const MainScreen(),
       ),
+      ShellRoute(
+          navigatorKey: shellKey,
+          routes: [
+            GoRoute(
+                path: "/exercise",
+                name: "exercise",
+                builder: (context, state) => const ExercisesScreen()),
+            GoRoute(
+                path: "/setting",
+                name: "setting",
+                builder: (context, state) => const SettingScreen()),
+          ],
+          builder: (context, state, child) => ShellScreen(child: child)),
       GoRoute(
-        path: '/second',
-        builder: (context, state) => const SecondScreen(),
-      ),
-      GoRoute(
-        path: '/third',
-        builder: (context, state) => ThirdScreen(),
-      ),
+        path: '/login',
+        name: 'authorization',
+        builder: (context, state) => const AuthScreen(),
+      )
     ],
   );
 
