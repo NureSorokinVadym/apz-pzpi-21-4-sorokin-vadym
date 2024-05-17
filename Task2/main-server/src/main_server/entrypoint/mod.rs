@@ -359,6 +359,12 @@ pub mod user {
         pub struct RewardCreateResponse {
             pub message: String,
         }
+
+        #[derive(Debug, Serialize, Deserialize)]
+        #[serde(crate = "rocket::serde")]
+        pub struct GiveMeExercise {
+            pub exercise_id: i32,
+        }
     }
     pub mod endpoints {
         use crate::application::use_cases;
@@ -447,6 +453,23 @@ pub mod user {
             })
         }
 
+        #[post("/give_me_exercise", format = "json", data = "<exercice>")]
+        pub async fn give_me_exercise(
+            db: MutDb,
+            exercice: Json<super::dto::GiveMeExercise>,
+            token: ApiKey<'_>,
+        ) -> Json<super::dto::RewardGiveResponse> {
+            println!("Giving exercice: {}", exercice.exercise_id);
+            let user_id = use_cases::authorizations::validate_token(token.into()).unwrap();
+            let result = use_cases::give_exercice(db, user_id, exercice.exercise_id).await;
+            Json::from(super::dto::RewardGiveResponse {
+                message: match result {
+                    Ok(_) => "Exercice given".to_string(),
+                    Err(err) => err,
+                },
+            })
+        }
+
         #[post("/create_reward", format = "json", data = "<reward>")]
         pub async fn create_reward(
             db: MutDb,
@@ -473,11 +496,12 @@ pub mod user {
     pub fn get_routes() -> Vec<rocket::Route> {
         routes![
             endpoints::give_reward,
+            endpoints::create_reward,
             endpoints::create_exercice,
             endpoints::get_exercices,
             endpoints::give_exercice,
+            endpoints::give_me_exercise,
             endpoints::create_exercice_type,
-            endpoints::create_reward
         ]
     }
 }

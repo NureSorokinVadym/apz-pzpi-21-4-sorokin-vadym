@@ -41,6 +41,11 @@ GoRouter router(RouterRef ref) {
         name: 'home',
         builder: (context, state) => const MainScreen(),
       ),
+      GoRoute(
+        path: '/exercise/add',
+        name: 'addExercise',
+        builder: (context, state) => const NewExerciseScreen(),
+      ),
       ShellRoute(
           navigatorKey: shellKey,
           routes: [

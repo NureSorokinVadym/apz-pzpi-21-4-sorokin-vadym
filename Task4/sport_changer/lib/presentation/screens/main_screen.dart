@@ -128,6 +128,22 @@ Widget exercisesScreen(BuildContext context, WidgetRef ref) {
     body: Center(
       child: Text("Exercises"),
     ),
+    floatingActionButton: FloatingActionButton(
+      onPressed: () => context.push("/exercise/add"),
+      child: const Icon(Icons.add),
+    ),
+  );
+}
+
+@hcwidget
+Widget newExerciseScreen(BuildContext context, WidgetRef ref) {
+  return Scaffold(
+    appBar: AppBar(
+      title: Text("New Exercise Screen"),
+    ),
+    body: Center(
+      child: Text("New Exercise"),
+    ),
   );
 }
 
