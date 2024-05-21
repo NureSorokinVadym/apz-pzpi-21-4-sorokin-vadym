@@ -101,12 +101,42 @@ Widget exercisesScreen(BuildContext context, WidgetRef ref) {
 
 @hcwidget
 Widget newExerciseScreen(BuildContext context, WidgetRef ref) {
+  final tabController = useTabController(initialLength: 10);
+
   return Scaffold(
     appBar: AppBar(
-      title: Text("New Exercise Screen"),
+      title: const Text("Choose Exercise"),
+      bottom: TabBar(
+        isScrollable: true,
+        controller: tabController,
+        tabs: const [
+          Tab(text: "Tab 1"),
+          Tab(text: "Tab 2"),
+          Tab(text: "Tab 3"),
+          Tab(text: "Tab 4"),
+          Tab(text: "Tab 5"),
+          Tab(text: "Tab 6"),
+          Tab(text: "Tab 7"),
+          Tab(text: "Tab 8"),
+          Tab(text: "Tab 9"),
+          Tab(text: "Tab 10"),
+        ],
+      ),
     ),
-    body: Center(
-      child: Text("New Exercise"),
+    body: TabBarView(
+      controller: tabController,
+      children: const [
+        Center(child: Text("Tab 1")),
+        Center(child: Text("Tab 2")),
+        Center(child: Text("Tab 3")),
+        Center(child: Text("Tab 4")),
+        Center(child: Text("Tab 5")),
+        Center(child: Text("Tab 6")),
+        Center(child: Text("Tab 7")),
+        Center(child: Text("Tab 8")),
+        Center(child: Text("Tab 9")),
+        Center(child: Text("Tab 10")),
+      ],
     ),
   );
 }

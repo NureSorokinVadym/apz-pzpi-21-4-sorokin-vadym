@@ -48,21 +48,26 @@ pub mod endpoints {
     pub async fn give_exercice(
         db: MutDb,
         token: ApiKey<'_>,
-        exercise_user: Json<UserExercisePair>,
+        mut exercise_user: Json<UserExercisePair>,
     ) -> Json<DefaultResponse> {
         println!("Giving exercice: {}", exercise_user.exercise_id);
-        let result = use_cases::give_exercice(db, token.into(), &exercise_user).await;
+        let result = use_cases::give_exercice(db, token.into(), &mut exercise_user).await;
         Json::from(DefaultResponse::from(result))
+    }
+
+    #[get("/get_exercises_types", format = "json")]
+    pub async fn get_exercises_types(db: MutDb) -> Json<Vec<(i32, String)>> {
+        Json::from(use_cases::get_exercises_types(db).await)
     }
 
     #[post("/give_me_exercise", format = "json", data = "<user_exercise>")]
     pub async fn give_me_exercise(
         db: MutDb,
         token: ApiKey<'_>,
-        user_exercise: Json<UserExercisePair>,
+        mut user_exercise: Json<UserExercisePair>,
     ) -> Json<DefaultResponse> {
         println!("Giving exercice: {}", user_exercise.exercise_id);
-        let result = use_cases::give_exercice(db, token.into(), &user_exercise).await;
+        let result = use_cases::give_exercice(db, token.into(), &mut user_exercise).await;
         Json::from(DefaultResponse::from(result))
     }
 
@@ -87,5 +92,6 @@ pub fn get_routes() -> Vec<rocket::Route> {
         endpoints::give_exercice,
         endpoints::give_me_exercise,
         endpoints::create_exercice_type,
+        endpoints::get_exercises_types,
     ]
 }

@@ -40,32 +40,18 @@ use crate::infrastructure::postgresql::{DataBaseWraper, MutDb};
 
 use crate::application::{authentication as auth, user as use_cases};
 
-#[post("/log_up", format = "json", data = "<log_up>")]
-pub async fn log_up(db: MutDb, log_up: Json<User>) -> Json<String> {
-    println!("Creating user: {}", log_up.email);
-
-    //    let user_create_request = use_cases::UserCreateRequest::new(
-    //        log_up.email.clone(),
-    //        log_up.password.unwrap().clone(),
-    //        log_up.name.clone(),
-    //        log_up.surname.unwrap().clone(),
-    //    );
-    //let user_id = use_cases::create_user(db, user_create_request).await;
-    todo!("Implement creating user");
-    let user_id = 0;
+#[post("/log_up", format = "json", data = "<user>")]
+pub async fn log_up(db: MutDb, user: Json<User>) -> Json<String> {
+    println!("Creating user: {}", user.email);
+    let user_id = use_cases::create_user(db, user.0).await.unwrap();
     Json::from(auth::create_token(user_id))
 }
 
-#[post("/log_in", format = "json", data = "<log_in>")]
-pub async fn log_in(db: &DataBaseWraper, log_in: Json<User>) -> Json<String> {
-    println!("Loging in user: {}", log_in.email);
-    //    let result = use_cases::login_user(
-    //        db,
-    //        use_cases::UserLoginRequest::new(log_in.email.clone(), log_in.password.clone()),
-    //    )
-    //    .await;
-    todo!("Implement login user");
-    Json::from(String::from("awesome token"))
+#[post("/log_in", format = "json", data = "<user>")]
+pub async fn log_in(db: &DataBaseWraper, user: Json<User>) -> Json<String> {
+    println!("Loging in user: {}", user.email);
+    let user_token = use_cases::login_user(db, user.0).await.unwrap();
+    return Json::from(user_token);
 }
 
 #[get("/user_info")]
