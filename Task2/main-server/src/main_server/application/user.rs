@@ -1,12 +1,12 @@
 use super::authentication as auth;
 use crate::domain::dto::*;
 use crate::infrastructure::postgresql::{
-    self, admin_repo, authentication as auth_repo, personal_repo, user_repo, MutDb,
+    admin_repo, authentication as auth_repo, personal_repo, user_repo,
 };
 
-use postgresql::DataBaseWraper;
+use sqlx::PgPool;
 
-pub async fn create_user(mut db: postgresql::MutDb, mut user: User) -> Result<i32, String> {
+pub async fn create_user(mut db: &PgPool, mut user: User) -> Result<i32, String> {
     let password_hash = auth::hash_password(&user.password.unwrap());
     user.password = Some(password_hash);
     match auth_repo::create_user(&mut db, &user).await {
@@ -15,7 +15,7 @@ pub async fn create_user(mut db: postgresql::MutDb, mut user: User) -> Result<i3
     }
 }
 
-pub async fn login_user(db: &postgresql::DataBaseWraper, req: User) -> Result<String, String> {
+pub async fn login_user(db: &PgPool, req: User) -> Result<String, String> {
     let user = auth_repo::get_user_with_password(db, &req.email)
         .await
         .unwrap();
@@ -26,7 +26,7 @@ pub async fn login_user(db: &postgresql::DataBaseWraper, req: User) -> Result<St
     }
 }
 
-pub async fn get_user_info(db: &DataBaseWraper, token: &str) -> Result<User, String> {
+pub async fn get_user_info(db: &PgPool, token: &str) -> Result<User, String> {
     let user_id = auth::validate_token(token).unwrap();
     let user = user_repo::get_user_info(db, user_id).await;
     match user {
@@ -36,7 +36,7 @@ pub async fn get_user_info(db: &DataBaseWraper, token: &str) -> Result<User, Str
 }
 
 pub async fn give_reward(
-    mut db: postgresql::MutDb,
+    mut db: &PgPool,
     token: &str,
     user_reward: &UserRewardPair,
 ) -> Result<i32, String> {
@@ -55,7 +55,7 @@ pub async fn give_reward(
 }
 
 pub async fn create_exercice(
-    mut db: postgresql::MutDb,
+    mut db: &PgPool,
     token: &str,
     exercice: &Exercise,
 ) -> Result<i32, String> {
@@ -72,12 +72,12 @@ pub async fn create_exercice(
     Ok(10)
 }
 
-pub async fn get_exercices(mut db: postgresql::MutDb) -> Vec<(i32, String)> {
+pub async fn get_exercices(mut db: &PgPool) -> Vec<(i32, String)> {
     user_repo::get_exercices(&mut db).await.unwrap()
 }
 
 pub async fn give_exercice(
-    mut db: postgresql::MutDb,
+    mut db: &PgPool,
     token: &str,
     user_exercise: &mut UserExercisePair,
 ) -> Result<i32, String> {
@@ -92,7 +92,7 @@ pub async fn give_exercice(
 }
 
 pub async fn create_exercise_type(
-    mut db: postgresql::MutDb,
+    mut db: &PgPool,
     token: &str,
     exercise_type: &ExerciceType,
 ) -> Result<i32, String> {
@@ -109,32 +109,26 @@ pub async fn create_exercise_type(
     Ok(10)
 }
 
-pub async fn get_exercises_types(mut db: MutDb) -> Vec<(i32, String)> {
-    user_repo::get_exercise_types(&mut db).await.unwrap()
+pub async fn get_exercises_types(db: &PgPool) -> Vec<(i32, String)> {
+    user_repo::get_exercise_types(db).await.unwrap()
 }
 
-pub async fn create_reward(
-    mut db: postgresql::MutDb,
-    token: &str,
-    reward: &Reward,
-) -> Result<i32, String> {
+pub async fn create_reward(db: &PgPool, token: &str, reward: &Reward) -> Result<i32, String> {
     let user_id = auth::validate_token(token)?;
-    let user_access_level = admin_repo::get_admin_access_level(&mut db, user_id)
+    let user_access_level = admin_repo::get_admin_access_level(db, user_id)
         .await
         .unwrap();
     if user_access_level < 8 {
         return Err("User access level is not enough".to_string());
     }
-    personal_repo::create_reward(&mut db, &reward)
-        .await
-        .unwrap();
+    personal_repo::create_reward(db, &reward).await.unwrap();
     Ok(10)
 }
 
-pub async fn get_user_types(mut db: MutDb, user_id: i32) -> Vec<String> {
-    let is_personal = auth_repo::is_personal(&mut db, user_id).await;
+pub async fn get_user_types(db: &PgPool, user_id: i32) -> Vec<String> {
+    let is_personal = auth_repo::is_personal(db, user_id).await;
     let is_admin = admin_repo::is_admin(db, user_id).await.unwrap();
-    let mut response = Vec::with_capacity(3);
+    let mut response = Vec::with_capacity(2);
     if is_personal {
         response.push("personal".to_string());
     }

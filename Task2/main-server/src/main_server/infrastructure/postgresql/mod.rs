@@ -1,16 +1,14 @@
-use rocket_db_pools::{sqlx, Connection, Database, Initializer};
+use sqlx::postgres::PgPoolOptions;
 
-#[derive(Database)]
-#[database("db")]
-pub struct DataBaseWraper(sqlx::PgPool);
-
-impl DataBaseWraper {
-    pub fn init_database() -> Initializer<DataBaseWraper> {
-        DataBaseWraper::init()
-    }
+pub async fn get_pool() -> sqlx::Pool<sqlx::Postgres> {
+    let db_url =
+        std::env::var("DATABASE_URL").unwrap_or("postgres://user:password@database/db".to_string());
+    PgPoolOptions::new()
+        .max_connections(5)
+        .connect(&db_url)
+        .await
+        .unwrap()
 }
-
-pub type MutDb = Connection<DataBaseWraper>;
 
 pub mod admin_repo;
 pub mod authentication;

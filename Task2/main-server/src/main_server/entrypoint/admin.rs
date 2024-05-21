@@ -1,13 +1,14 @@
 pub mod endpoints {
     use crate::application::admin as use_cases;
     use crate::entrypoint::{ApiKey, Json};
-    use crate::infrastructure::postgresql::MutDb;
+    use rocket::State;
+    use sqlx::PgPool;
 
     use crate::domain::dto::*;
 
     #[post("/create_admin", format = "json", data = "<admin>")]
     pub async fn create_admin(
-        db: MutDb,
+        db: &State<PgPool>,
         admin: Json<Admin>,
         api_key: ApiKey<'_>,
     ) -> Json<DefaultResponse> {

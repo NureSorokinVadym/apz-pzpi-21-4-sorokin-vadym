@@ -2,7 +2,7 @@
 extern crate rocket;
 
 use main_server::entrypoint as api;
-use main_server::infrastructure::postgresql::DataBaseWraper;
+use main_server::infrastructure::postgresql::get_pool;
 
 use rocket::http::Method;
 use rocket_cors::{AllowedOrigins, CorsOptions};
@@ -18,6 +18,7 @@ async fn rocket() -> _ {
                 .collect(),
         )
         .allow_credentials(true);
+    let pool = get_pool().await;
 
     rocket::build()
         .mount("/auth/", api::authentication::get_routes())
@@ -25,5 +26,5 @@ async fn rocket() -> _ {
         .mount("/admin", api::admin::get_routes())
         .mount("/user", api::user::get_routes())
         .attach(cors.to_cors().unwrap())
-        .attach(DataBaseWraper::init_database())
+        .manage(pool)
 }

@@ -36,33 +36,34 @@ pub mod jwt_provider {
 }
 
 use crate::domain::dto::*;
-use crate::infrastructure::postgresql::{DataBaseWraper, MutDb};
+use rocket::State;
+use sqlx::PgPool;
 
 use crate::application::{authentication as auth, user as use_cases};
 
 #[post("/log_up", format = "json", data = "<user>")]
-pub async fn log_up(db: MutDb, user: Json<User>) -> Json<String> {
+pub async fn log_up(db: &State<PgPool>, user: Json<User>) -> Json<String> {
     println!("Creating user: {}", user.email);
     let user_id = use_cases::create_user(db, user.0).await.unwrap();
     Json::from(auth::create_token(user_id))
 }
 
 #[post("/log_in", format = "json", data = "<user>")]
-pub async fn log_in(db: &DataBaseWraper, user: Json<User>) -> Json<String> {
+pub async fn log_in(db: &State<PgPool>, user: Json<User>) -> Json<String> {
     println!("Loging in user: {}", user.email);
     let user_token = use_cases::login_user(db, user.0).await.unwrap();
     return Json::from(user_token);
 }
 
 #[get("/user_info")]
-pub async fn user_info(db: &DataBaseWraper, api_key: jwt_provider::ApiKey<'_>) -> Json<User> {
+pub async fn user_info(db: &State<PgPool>, api_key: jwt_provider::ApiKey<'_>) -> Json<User> {
     let user = use_cases::get_user_info(db, api_key.into()).await.unwrap();
     Json::from(user)
 }
 
 #[get("/user_types")]
 pub async fn get_user_types(
-    db: &DataBaseWraper,
+    db: &State<PgPool>,
     api_key: jwt_provider::ApiKey<'_>,
 ) -> Json<Vec<String>> {
     let user_id = auth::validate_token(api_key.into()).unwrap();

@@ -1,13 +1,15 @@
 pub mod endpoints {
     use crate::application::user as use_cases;
     use crate::entrypoint::{ApiKey, Json};
-    use crate::infrastructure::postgresql::MutDb;
+
+    use rocket::State;
+    use sqlx::PgPool;
 
     use crate::domain::dto::*;
 
     #[post("/give_reward", format = "json", data = "<reward>")]
     pub async fn give_reward(
-        db: MutDb,
+        db: &State<PgPool>,
         reward: Json<UserRewardPair>,
         api_key: ApiKey<'_>,
     ) -> Json<DefaultResponse> {
@@ -18,7 +20,7 @@ pub mod endpoints {
 
     #[post("/create_exercice", format = "json", data = "<exercise>")]
     pub async fn create_exercice(
-        db: MutDb,
+        db: &State<PgPool>,
         exercise: Json<Exercise>,
         api_key: ApiKey<'_>,
     ) -> Json<DefaultResponse> {
@@ -29,7 +31,7 @@ pub mod endpoints {
 
     #[post("/create_exercice_type", format = "json", data = "<exercise_type>")]
     pub async fn create_exercice_type(
-        db: MutDb,
+        db: &State<PgPool>,
         exercise_type: Json<ExerciceType>,
         api_key: ApiKey<'_>,
     ) -> Json<DefaultResponse> {
@@ -39,14 +41,14 @@ pub mod endpoints {
     }
 
     #[get("/exercices")]
-    pub async fn get_exercices(db: MutDb) -> Json<Vec<(i32, String)>> {
+    pub async fn get_exercices(db: &State<PgPool>) -> Json<Vec<(i32, String)>> {
         let exercices = use_cases::get_exercices(db).await;
         Json::from(exercices)
     }
 
     #[post("/give_exercice", format = "json", data = "<exercise_user>")]
     pub async fn give_exercice(
-        db: MutDb,
+        db: &State<PgPool>,
         token: ApiKey<'_>,
         mut exercise_user: Json<UserExercisePair>,
     ) -> Json<DefaultResponse> {
@@ -56,13 +58,13 @@ pub mod endpoints {
     }
 
     #[get("/get_exercises_types", format = "json")]
-    pub async fn get_exercises_types(db: MutDb) -> Json<Vec<(i32, String)>> {
+    pub async fn get_exercises_types(db: &State<PgPool>) -> Json<Vec<(i32, String)>> {
         Json::from(use_cases::get_exercises_types(db).await)
     }
 
     #[post("/give_me_exercise", format = "json", data = "<user_exercise>")]
     pub async fn give_me_exercise(
-        db: MutDb,
+        db: &State<PgPool>,
         token: ApiKey<'_>,
         mut user_exercise: Json<UserExercisePair>,
     ) -> Json<DefaultResponse> {
@@ -73,7 +75,7 @@ pub mod endpoints {
 
     #[post("/create_reward", format = "json", data = "<reward>")]
     pub async fn create_reward(
-        db: MutDb,
+        db: &State<PgPool>,
         api_key: ApiKey<'_>,
         reward: Json<Reward>,
     ) -> Json<DefaultResponse> {
