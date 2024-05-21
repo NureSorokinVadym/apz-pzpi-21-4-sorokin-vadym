@@ -18,3 +18,12 @@ pub async fn create_admin(
         Err(e) => Err(e.to_string()),
     }
 }
+
+pub async fn is_admin(db: &postgresql::MutDb, token: &str) -> Result<bool, String> {
+    let user_id = auth::validate_token(token)?;
+    let result = admin_repo::is_admin(&db, user_id).await;
+    match result {
+        Ok(is_admin) => Ok(is_admin),
+        Err(e) => Err(e.to_string()),
+    }
+}

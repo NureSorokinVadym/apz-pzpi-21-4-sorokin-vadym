@@ -1,7 +1,7 @@
 use super::authentication as auth;
 use crate::domain::dto::*;
 use crate::infrastructure::postgresql::{
-    self, admin_repo, authentication as auth_repo, personal_repo, user_repo,
+    self, admin_repo, authentication as auth_repo, personal_repo, user_repo, MutDb,
 };
 
 use postgresql::DataBaseWraper;
@@ -109,7 +109,7 @@ pub async fn create_exercise_type(
     Ok(10)
 }
 
-pub async fn get_exercises_types(mut db: postgresql::MutDb) -> Vec<(i32, String)> {
+pub async fn get_exercises_types(mut db: MutDb) -> Vec<(i32, String)> {
     user_repo::get_exercise_types(&mut db).await.unwrap()
 }
 
@@ -129,4 +129,17 @@ pub async fn create_reward(
         .await
         .unwrap();
     Ok(10)
+}
+
+pub async fn get_user_types(mut db: MutDb, user_id: i32) -> Vec<String> {
+    let is_personal = auth_repo::is_personal(&mut db, user_id).await;
+    let is_admin = admin_repo::is_admin(db, user_id).await.unwrap();
+    let mut response = Vec::with_capacity(3);
+    if is_personal {
+        response.push("personal".to_string());
+    }
+    if is_admin {
+        response.push("admin".to_string());
+    }
+    response
 }

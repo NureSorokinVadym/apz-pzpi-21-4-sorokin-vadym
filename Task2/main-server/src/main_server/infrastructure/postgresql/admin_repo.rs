@@ -1,4 +1,4 @@
-use super::{sqlx, MutDb};
+use super::{sqlx, DataBaseWraper, MutDb};
 
 pub async fn create_admin(
     mut db: MutDb,
@@ -19,4 +19,12 @@ pub async fn get_admin_access_level(db: &mut MutDb, user_id: i32) -> Result<i32,
         .fetch_one(&mut ***db)
         .await?;
     Ok(row.0)
+}
+
+pub async fn is_admin(db: &MutDb, user_id: i32) -> Result<bool, sqlx::Error> {
+    let row: (i32,) = sqlx::query_as("select count(*) from admin where user_id = $1")
+        .bind(user_id)
+        .fetch_one(&**db)
+        .await?;
+    Ok(row.0 > 0)
 }

@@ -46,10 +46,10 @@ pub async fn create_personal(
     Ok(3)
 }
 
-pub async fn is_personal(db: &mut MutDb, user_id: i32) -> bool {
+pub async fn is_personal(mut db: MutDb, user_id: i32) -> bool {
     let row: Option<_> = sqlx::query("select user_id from personal where user_id = $1")
         .bind(user_id)
-        .fetch_optional(&mut ***db)
+        .fetch_optional(&mut **db)
         .await
         .unwrap();
     row.is_some()

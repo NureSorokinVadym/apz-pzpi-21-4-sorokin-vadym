@@ -60,6 +60,15 @@ pub async fn user_info(db: &DataBaseWraper, api_key: jwt_provider::ApiKey<'_>) -
     Json::from(user)
 }
 
+#[get("/user_types")]
+pub async fn get_user_types(
+    db: &DataBaseWraper,
+    api_key: jwt_provider::ApiKey<'_>,
+) -> Json<Vec<String>> {
+    let user_id = auth::validate_token(api_key.into()).unwrap();
+    Json::from(use_cases::get_user_types(db, user_id).await)
+}
+
 pub fn get_routes() -> Vec<rocket::Route> {
     routes![log_up, log_in, user_info]
 }

@@ -93,7 +93,7 @@ pub struct Specification {
 #[serde(crate = "rocket::serde")]
 pub struct User {
     pub id: Option<i32>,
-    pub name: String,
+    pub name: Option<String>,
     pub surname: Option<String>,
     pub email: String,
     pub password: Option<String>,
@@ -103,7 +103,7 @@ impl User {
     pub fn new_basic(email: String, name: String, surname: String) -> Self {
         User {
             id: None,
-            name,
+            name: Some(name),
             surname: Some(surname),
             email,
             password: None,
