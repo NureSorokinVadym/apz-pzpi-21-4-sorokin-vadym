@@ -40,20 +40,6 @@ class MainScreen extends HookConsumerWidget {
       );
 }
 
-class AuthScreen extends HookConsumerWidget {
-  const AuthScreen({Key? key}) : super(key: key);
-
-  @override
-  Widget build(
-    BuildContext _context,
-    WidgetRef _ref,
-  ) =>
-      authScreen(
-        _context,
-        _ref,
-      );
-}
-
 class ShellScreen extends HookConsumerWidget {
   const ShellScreen({
     Key? key,

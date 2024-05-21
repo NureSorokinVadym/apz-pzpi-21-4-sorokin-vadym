@@ -48,6 +48,27 @@ class AuthInfoControler extends _$AuthInfoControler {
     }
   }
 
+  Future requestLogup(
+      String email, String password, String name, String surname) async {
+    state = const AsyncValue.loading();
+    final response = await _client.post(
+      Uri.parse('${URL}api/auth/log_up'),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode({
+        'email': email,
+        'password': password,
+        'name': name,
+        'surname': surname,
+      }),
+    );
+    if (response.statusCode == 200) {
+      final token = jsonDecode(response.body)['token'] as String;
+      await setToken(token);
+    }
+  }
+
   Future setAuthInfo(AuthInfo authInfo) async {
     await _prefs.setString(Token.key, authInfo.token);
     state = AsyncValue.data(authInfo);

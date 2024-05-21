@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sport_changer/presentation/screens/main_screen.dart';
+import 'package:sport_changer/presentation/screens/authentication.dart';
 import 'package:sport_changer/application/controllers/auth.dart';
+import './routes.dart';
 
 part 'router.g.dart';
 
@@ -23,51 +25,55 @@ GoRouter router(RouterRef ref) {
     })
     ..onDispose(isAuth.dispose);
 
-  final _router = GoRouter(
+  final router = GoRouter(
     navigatorKey: routerKey,
-    initialLocation: '/',
+    initialLocation: Routes.login.url,
     refreshListenable: isAuth,
     redirect: (context, state) {
       final authValue = isAuth.value.requireValue;
-      final isLogin = state.fullPath == "/login";
+      final isLogin = state.fullPath?.startsWith("/auth") ?? false;
+      final nextRouteIsAuth = state.matchedLocation.startsWith("/auth");
 
-      if (authValue && isLogin) return "/";
-      if (!authValue && !isLogin) return "/login";
+      if (authValue && isLogin) return Routes.exercise.url;
+      if (!authValue && !isLogin) {
+        return nextRouteIsAuth ? null : Routes.login.url;
+      }
+
       return null;
     },
     routes: [
       GoRoute(
-        path: '/',
-        name: 'home',
-        builder: (context, state) => const MainScreen(),
-      ),
-      GoRoute(
-        path: '/exercise/add',
-        name: 'addExercise',
+        path: Routes.addExercise.url,
+        name: Routes.addExercise.name,
         builder: (context, state) => const NewExerciseScreen(),
       ),
       ShellRoute(
           navigatorKey: shellKey,
           routes: [
             GoRoute(
-                path: "/exercise",
-                name: "exercise",
+                path: Routes.exercise.url,
+                name: Routes.exercise.name,
                 builder: (context, state) => const ExercisesScreen()),
             GoRoute(
-                path: "/setting",
-                name: "setting",
+                path: Routes.settings.url,
+                name: Routes.settings.name,
                 builder: (context, state) => const SettingScreen()),
           ],
           builder: (context, state, child) => ShellScreen(child: child)),
       GoRoute(
-        path: '/login',
-        name: 'authorization',
-        builder: (context, state) => const AuthScreen(),
+        path: Routes.login.url,
+        name: Routes.login.name,
+        builder: (context, state) => const LogInScreen(),
+      ),
+      GoRoute(
+        path: Routes.sighup.url,
+        name: Routes.sighup.name,
+        builder: (context, state) => const SighUpScreen(),
       )
     ],
   );
 
-  ref.onDispose(_router.dispose);
+  ref.onDispose(router.dispose);
 
-  return _router;
+  return router;
 }

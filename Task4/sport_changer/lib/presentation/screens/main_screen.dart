@@ -3,6 +3,7 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import 'package:flutter_hooks/flutter_hooks.dart';
 import "package:go_router/go_router.dart";
 import 'package:functional_widget_annotation/functional_widget_annotation.dart';
+import 'package:sport_changer/presentation/router/routes.dart';
 
 import 'package:sport_changer/application/controllers/auth.dart';
 import 'package:sport_changer/domain/auth.dart';
@@ -46,45 +47,8 @@ Widget mainScreen(BuildContext context, WidgetRef ref) {
           ),
           TextButton(
               child: const Text("Go to Exercises"),
-              onPressed: () => context.go("/exercise")),
+              onPressed: () => context.go(Routes.exercise.url)),
         ])),
-      ));
-}
-
-@hcwidget
-Widget authScreen(BuildContext context, WidgetRef ref) {
-  final emailController = useTextEditingController();
-  final passwordController = useTextEditingController();
-
-  final label = useState("");
-
-  return Scaffold(
-      appBar: AppBar(
-        title: Text("Auth Screen ${label.value}"),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Center(
-          child: Column(
-            children: [
-              TextField(
-                controller: emailController,
-                onChanged: (value) => label.value = value,
-                decoration: const InputDecoration(labelText: "Email"),
-              ),
-              TextField(
-                controller: passwordController,
-                decoration: const InputDecoration(labelText: "Password"),
-              ),
-              TextButton(
-                  child: const Text("Save token"),
-                  onPressed: () => ref
-                      .read(authInfoControlerProvider.notifier)
-                      .requestLogin(
-                          emailController.text, passwordController.text)),
-            ],
-          ),
-        ),
       ));
 }
 
@@ -110,9 +74,9 @@ Widget shellScreen(BuildContext context, WidgetRef ref,
       onTap: (index) {
         checkedIndex.value = index;
         if (index == 0) {
-          context.go("/exercise");
+          context.go(Routes.exercise.url);
         } else {
-          context.go("/setting");
+          context.go(Routes.settings.url);
         }
       },
     ),
@@ -160,7 +124,9 @@ Widget settingScreen(BuildContext context, WidgetRef ref) {
           children: [
             TextButton(
                 child: const Text("Go to Start"),
-                onPressed: () => context.go("/")),
+                onPressed: () {
+                  ref.read(authInfoControlerProvider.notifier).deleteToken();
+                }),
           ],
         ),
       ),
