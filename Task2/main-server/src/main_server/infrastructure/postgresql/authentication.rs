@@ -46,11 +46,10 @@ pub async fn create_personal(
     Ok(3)
 }
 
-pub async fn is_personal(db: &PgPool, user_id: i32) -> bool {
-    let row: Option<_> = sqlx::query("select user_id from personal where user_id = $1")
+pub async fn is_personal(db: &PgPool, user_id: i32) -> Result<bool, sqlx::Error> {
+    let row: (i64,) = sqlx::query_as("select count(*) from personal where user_id = $1")
         .bind(user_id)
-        .fetch_optional(db)
-        .await
-        .unwrap();
-    row.is_some()
+        .fetch_one(db)
+        .await?;
+    Ok(row.0 > 0)
 }

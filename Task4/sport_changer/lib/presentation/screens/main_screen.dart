@@ -18,6 +18,9 @@ Widget userInfo(BuildContext context, WidgetRef ref,
       Text("Email: ${authInfo.email}"),
       Text("Name: ${authInfo.name}"),
       Text("Surname: ${authInfo.surname}"),
+      Text("Token: ${authInfo.token}"),
+      Text("Login type: ${authInfo.loginType}"),
+      Text("Login variants: ${authInfo.loginVariants}")
     ],
   );
 }
@@ -143,15 +146,23 @@ Widget newExerciseScreen(BuildContext context, WidgetRef ref) {
 
 @hcwidget
 Widget settingScreen(BuildContext context, WidgetRef ref) {
+  final authInfo = ref.watch(authInfoControlerProvider);
+
   return Scaffold(
     appBar: AppBar(
-      title: Text("Settings Screen"),
+      title: const Text("Settings"),
     ),
     body: Padding(
       padding: const EdgeInsets.all(16),
       child: Center(
         child: Column(
           children: [
+            authInfo.when(
+                data: (value) => value == null
+                    ? const Text("Wait")
+                    : UserInfo(authInfo: value),
+                loading: () => const CircularProgressIndicator(),
+                error: (error, stack) => Text("Error: $error")),
             TextButton(
                 child: const Text("Go to Start"),
                 onPressed: () {

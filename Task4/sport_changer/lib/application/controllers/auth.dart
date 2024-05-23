@@ -43,7 +43,7 @@ class AuthInfoControler extends _$AuthInfoControler {
       body: jsonEncode({'email': email, 'password': password}),
     );
     if (response.statusCode == 200) {
-      final token = jsonDecode(response.body)['token'] as String;
+      final token = jsonDecode(response.body);
       await setToken(token);
     }
   }
@@ -64,7 +64,7 @@ class AuthInfoControler extends _$AuthInfoControler {
       }),
     );
     if (response.statusCode == 200) {
-      final token = jsonDecode(response.body)['token'] as String;
+      final token = jsonDecode(response.body);
       await setToken(token);
     }
   }
@@ -92,11 +92,33 @@ class AuthInfoControler extends _$AuthInfoControler {
         'Authorization': 'Bearer $token',
       },
     );
-    if (response.statusCode == 200) {
+
+    final userTypesResp = await _client.get(
+      Uri.parse('${URL}api/auth/user_types'),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200 && userTypesResp.statusCode == 200) {
       final data = jsonDecode(response.body);
       data['token'] = token;
+      data['loginVariants'] = jsonDecode(userTypesResp.body);
+      if (data["loginVariants"].isNotEmpty) {
+        data["loginType"] = data["loginVariants"][0];
+      }
       return AuthInfo.fromJson(data);
     }
     return AuthInfo(token: token);
   }
+}
+
+@riverpod
+String getToken(GetTokenRef ref) {
+  return ref.watch(authInfoControlerProvider).when(
+        data: (authInfo) => authInfo?.token ?? '',
+        loading: () => '',
+        error: (error, _) => '',
+      );
 }

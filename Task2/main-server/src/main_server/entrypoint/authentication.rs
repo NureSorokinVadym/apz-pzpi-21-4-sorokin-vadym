@@ -71,5 +71,5 @@ pub async fn get_user_types(
 }
 
 pub fn get_routes() -> Vec<rocket::Route> {
-    routes![log_up, log_in, user_info]
+    routes![log_up, log_in, user_info, get_user_types]
 }

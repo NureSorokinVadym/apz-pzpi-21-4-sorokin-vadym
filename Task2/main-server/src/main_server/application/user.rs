@@ -41,7 +41,7 @@ pub async fn give_reward(
     user_reward: &UserRewardPair,
 ) -> Result<i32, String> {
     let personal_id = auth::validate_token(token)?;
-    if !auth_repo::is_personal(&mut db, personal_id).await {
+    if !auth_repo::is_personal(&mut db, personal_id).await.unwrap() {
         return Err("User is not personal".to_string());
     }
     personal_repo::give_reward(
@@ -126,7 +126,7 @@ pub async fn create_reward(db: &PgPool, token: &str, reward: &Reward) -> Result<
 }
 
 pub async fn get_user_types(db: &PgPool, user_id: i32) -> Vec<String> {
-    let is_personal = auth_repo::is_personal(db, user_id).await;
+    let is_personal = auth_repo::is_personal(db, user_id).await.unwrap();
     let is_admin = admin_repo::is_admin(db, user_id).await.unwrap();
     let mut response = Vec::with_capacity(2);
     if is_personal {

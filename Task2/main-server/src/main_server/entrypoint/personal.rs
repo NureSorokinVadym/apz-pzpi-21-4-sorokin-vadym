@@ -32,6 +32,12 @@ pub mod endpoints {
         let specifications = use_cases::get_specifications(db).await;
         Json::from(specifications)
     }
+
+    #[get("/get_clients")]
+    pub async fn get_clients(db: &State<PgPool>, token: ApiKey<'_>) -> Json<Vec<User>> {
+        let clients = use_cases::get_clients(db, token.into()).await;
+        Json::from(clients)
+    }
 }
 
 use endpoints::{create_personal, create_specification, get_specifications};

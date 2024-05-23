@@ -6,7 +6,7 @@ class Route {
 
 class Routes {
   static final home = Route('/', 'home');
-  static final login = Route('/auth/login', 'login');
+  static final login = Route('/auth/log_in', 'login');
   static final sighup = Route('/auth/sighup', 'sighup');
   static final exercise = Route('/exercise', 'exercise');
   static final addExercise = Route('/exercise/add', 'addExercise');

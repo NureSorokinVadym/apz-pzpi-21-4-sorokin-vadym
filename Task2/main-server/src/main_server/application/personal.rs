@@ -30,3 +30,11 @@ pub async fn create_specification(
         .unwrap();
     Ok(10)
 }
+
+pub async fn get_clients(db: &PgPool, token: &str) -> Vec<User> {
+    let user_id = auth::validate_token(token).unwrap();
+
+    personal_repo::get_client_from_personal(db, user_id)
+        .await
+        .unwrap()
+}

@@ -21,6 +21,8 @@ AuthInfo _$AuthInfoFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$AuthInfo {
   String get token => throw _privateConstructorUsedError;
+  LoginType? get loginType => throw _privateConstructorUsedError;
+  List<LoginType> get loginVariants => throw _privateConstructorUsedError;
   String? get email => throw _privateConstructorUsedError;
   String? get name => throw _privateConstructorUsedError;
   String? get surname => throw _privateConstructorUsedError;
@@ -36,7 +38,13 @@ abstract class $AuthInfoCopyWith<$Res> {
   factory $AuthInfoCopyWith(AuthInfo value, $Res Function(AuthInfo) then) =
       _$AuthInfoCopyWithImpl<$Res, AuthInfo>;
   @useResult
-  $Res call({String token, String? email, String? name, String? surname});
+  $Res call(
+      {String token,
+      LoginType? loginType,
+      List<LoginType> loginVariants,
+      String? email,
+      String? name,
+      String? surname});
 }
 
 /// @nodoc
@@ -53,6 +61,8 @@ class _$AuthInfoCopyWithImpl<$Res, $Val extends AuthInfo>
   @override
   $Res call({
     Object? token = null,
+    Object? loginType = freezed,
+    Object? loginVariants = null,
     Object? email = freezed,
     Object? name = freezed,
     Object? surname = freezed,
@@ -62,6 +72,14 @@ class _$AuthInfoCopyWithImpl<$Res, $Val extends AuthInfo>
           ? _value.token
           : token // ignore: cast_nullable_to_non_nullable
               as String,
+      loginType: freezed == loginType
+          ? _value.loginType
+          : loginType // ignore: cast_nullable_to_non_nullable
+              as LoginType?,
+      loginVariants: null == loginVariants
+          ? _value.loginVariants
+          : loginVariants // ignore: cast_nullable_to_non_nullable
+              as List<LoginType>,
       email: freezed == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
@@ -86,7 +104,13 @@ abstract class _$$AuthInfoImplCopyWith<$Res>
       __$$AuthInfoImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String token, String? email, String? name, String? surname});
+  $Res call(
+      {String token,
+      LoginType? loginType,
+      List<LoginType> loginVariants,
+      String? email,
+      String? name,
+      String? surname});
 }
 
 /// @nodoc
@@ -101,6 +125,8 @@ class __$$AuthInfoImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? token = null,
+    Object? loginType = freezed,
+    Object? loginVariants = null,
     Object? email = freezed,
     Object? name = freezed,
     Object? surname = freezed,
@@ -110,6 +136,14 @@ class __$$AuthInfoImplCopyWithImpl<$Res>
           ? _value.token
           : token // ignore: cast_nullable_to_non_nullable
               as String,
+      loginType: freezed == loginType
+          ? _value.loginType
+          : loginType // ignore: cast_nullable_to_non_nullable
+              as LoginType?,
+      loginVariants: null == loginVariants
+          ? _value._loginVariants
+          : loginVariants // ignore: cast_nullable_to_non_nullable
+              as List<LoginType>,
       email: freezed == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
@@ -130,13 +164,30 @@ class __$$AuthInfoImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$AuthInfoImpl implements _AuthInfo {
   const _$AuthInfoImpl(
-      {required this.token, this.email, this.name, this.surname});
+      {required this.token,
+      this.loginType,
+      final List<LoginType> loginVariants = const [],
+      this.email,
+      this.name,
+      this.surname})
+      : _loginVariants = loginVariants;
 
   factory _$AuthInfoImpl.fromJson(Map<String, dynamic> json) =>
       _$$AuthInfoImplFromJson(json);
 
   @override
   final String token;
+  @override
+  final LoginType? loginType;
+  final List<LoginType> _loginVariants;
+  @override
+  @JsonKey()
+  List<LoginType> get loginVariants {
+    if (_loginVariants is EqualUnmodifiableListView) return _loginVariants;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_loginVariants);
+  }
+
   @override
   final String? email;
   @override
@@ -146,7 +197,7 @@ class _$AuthInfoImpl implements _AuthInfo {
 
   @override
   String toString() {
-    return 'AuthInfo(token: $token, email: $email, name: $name, surname: $surname)';
+    return 'AuthInfo(token: $token, loginType: $loginType, loginVariants: $loginVariants, email: $email, name: $name, surname: $surname)';
   }
 
   @override
@@ -155,6 +206,10 @@ class _$AuthInfoImpl implements _AuthInfo {
         (other.runtimeType == runtimeType &&
             other is _$AuthInfoImpl &&
             (identical(other.token, token) || other.token == token) &&
+            (identical(other.loginType, loginType) ||
+                other.loginType == loginType) &&
+            const DeepCollectionEquality()
+                .equals(other._loginVariants, _loginVariants) &&
             (identical(other.email, email) || other.email == email) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.surname, surname) || other.surname == surname));
@@ -162,7 +217,14 @@ class _$AuthInfoImpl implements _AuthInfo {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, token, email, name, surname);
+  int get hashCode => Object.hash(
+      runtimeType,
+      token,
+      loginType,
+      const DeepCollectionEquality().hash(_loginVariants),
+      email,
+      name,
+      surname);
 
   @JsonKey(ignore: true)
   @override
@@ -181,6 +243,8 @@ class _$AuthInfoImpl implements _AuthInfo {
 abstract class _AuthInfo implements AuthInfo {
   const factory _AuthInfo(
       {required final String token,
+      final LoginType? loginType,
+      final List<LoginType> loginVariants,
       final String? email,
       final String? name,
       final String? surname}) = _$AuthInfoImpl;
@@ -190,6 +254,10 @@ abstract class _AuthInfo implements AuthInfo {
 
   @override
   String get token;
+  @override
+  LoginType? get loginType;
+  @override
+  List<LoginType> get loginVariants;
   @override
   String? get email;
   @override

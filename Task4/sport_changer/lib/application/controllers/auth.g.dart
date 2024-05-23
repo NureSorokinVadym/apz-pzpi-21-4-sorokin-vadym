@@ -6,7 +6,21 @@ part of 'auth.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$authInfoControlerHash() => r'4c117f04fd4684117973e371414484e89b0b7629';
+String _$getTokenHash() => r'f2c040600385448cc0aedf6de4498f76ab5f4665';
+
+/// See also [getToken].
+@ProviderFor(getToken)
+final getTokenProvider = AutoDisposeProvider<String>.internal(
+  getToken,
+  name: r'getTokenProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$getTokenHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef GetTokenRef = AutoDisposeProviderRef<String>;
+String _$authInfoControlerHash() => r'd1d425216257721049db1679061ec7070d8ff8ac';
 
 /// See also [AuthInfoControler].
 @ProviderFor(AuthInfoControler)

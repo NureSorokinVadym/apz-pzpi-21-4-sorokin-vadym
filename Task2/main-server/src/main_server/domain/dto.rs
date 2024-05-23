@@ -110,3 +110,15 @@ impl User {
         }
     }
 }
+
+impl From<&(i32, String, String, String)> for User {
+    fn from(user: &(i32, String, String, String)) -> Self {
+        User {
+            id: Some(user.0),
+            name: Some(user.1.to_owned()),
+            surname: Some(user.2.to_owned()),
+            email: user.3.to_owned(),
+            password: None,
+        }
+    }
+}

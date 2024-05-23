@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sport_changer/presentation/screens/main_screen.dart';
+import 'package:sport_changer/presentation/screens/personal.dart';
 import 'package:sport_changer/presentation/screens/authentication.dart';
 import 'package:sport_changer/application/controllers/auth.dart';
+import 'package:sport_changer/domain/auth.dart';
 import './routes.dart';
 
 part 'router.g.dart';
@@ -24,10 +26,14 @@ GoRouter router(RouterRef ref) {
           error: (_, __) => false));
     })
     ..onDispose(isAuth.dispose);
+  final loginType = ref.watch(authInfoControlerProvider).when(
+      data: (authInfo) => authInfo?.loginType,
+      loading: () => null,
+      error: (error, _) => null);
 
   final router = GoRouter(
     navigatorKey: routerKey,
-    initialLocation: Routes.login.url,
+    initialLocation: Routes.sighup.url,
     refreshListenable: isAuth,
     redirect: (context, state) {
       final authValue = isAuth.value.requireValue;
@@ -53,7 +59,9 @@ GoRouter router(RouterRef ref) {
             GoRoute(
                 path: Routes.exercise.url,
                 name: Routes.exercise.name,
-                builder: (context, state) => const ExercisesScreen()),
+                builder: (context, state) => loginType == LoginType.personal
+                    ? const ClientViewScreen()
+                    : const ExercisesScreen()),
             GoRoute(
                 path: Routes.settings.url,
                 name: Routes.settings.name,

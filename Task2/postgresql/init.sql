@@ -87,6 +87,33 @@ CREATE TABLE exercice_user (
   CONSTRAINT fk_exerciseuser_user FOREIGN KEY (user_id) REFERENCES user_base(id)
 );
 
+INSERT INTO user_base(name, surname, email, password_hash) VALUES ('admin', 'admin', 'sss', '$2b$10$7614Rt0Wieb/hPEPyMpJheTDYaSYVQ/R6cgch2wqKePaJp/T/BlE.');
+INSERT INTO admin(user_id, access_level) VALUES (1, 10);
+
+INSERT INTO specification(name) VALUES ('Personal Trainer');
+INSERT INTO specification(name) VALUES ('Nutritionist');
+
+INSERT INTO exercice_type(name) VALUES ('Cardio');
+INSERT INTO exercice_type(name) VALUES ('Strength');
+
+INSERT INTO exercice(name, measurement, exercice_type_id) VALUES ('Running', 'km', 1);
+INSERT INTO exercice(name, measurement, exercice_type_id) VALUES ('Cycling', 'km', 1);
+INSERT INTO exercice(name, measurement, exercice_type_id) VALUES ('Swimming', 'km', 1);
+INSERT INTO exercice(name, measurement, exercice_type_id) VALUES ('Squats', 'reps', 2);
+
+INSERT INTO reward(name, condition) VALUES ('First reward', 'First reward condition');
+INSERT INTO reward(name, condition) VALUES ('Second reward', 'Second reward condition');
+
+
+INSERT INTO user_base(name, email, password_hash) VALUES ('personal', 'personal', '$2b$10$7614Rt0Wieb/hPEPyMpJheTDYaSYVQ/R6cgch2wqKePaJp/T/BlE.');
+INSERT INTO personal(user_id, specification_id) VALUES (2, 1);
+INSERT INTO reward_user(user_id, reward_id) VALUES (2, 1);
+INSERT INTO reward_user(user_id, reward_id) VALUES (2, 2);
+INSERT INTO exercice_user(exercice_id, user_id, duration, number, weight, pulse, heard_rate) VALUES (1, 2, 10, 10, 10, 10, 10);
+INSERT INTO exercice_user(exercice_id, user_id, duration, number, weight, pulse, heard_rate) VALUES (2, 2, 10, 10, 10, 10, 10);
+
+
+
 --
 --
 --CREATE TYPE ChatType AS ENUM ('private', 'group', 'channel');
