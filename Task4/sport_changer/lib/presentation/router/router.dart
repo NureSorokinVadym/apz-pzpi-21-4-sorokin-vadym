@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sport_changer/presentation/screens/main_screen.dart';
-import 'package:sport_changer/presentation/screens/personal.dart';
 import 'package:sport_changer/presentation/screens/authentication.dart';
 import 'package:sport_changer/application/controllers/auth.dart';
-import 'package:sport_changer/domain/auth.dart';
 import './routes.dart';
 
 part 'router.g.dart';
@@ -16,24 +14,14 @@ GoRouter router(RouterRef ref) {
   final shellKey = GlobalKey<NavigatorState>(debugLabel: 'shellState');
   final isAuth = ValueNotifier(const AsyncValue.data(false));
   ref
-    ..listen(
-        authInfoControlerProvider
-            .select((value) => value.whenData((value) => value?.token)),
-        (state, nextValue) {
-      isAuth.value = AsyncValue.data(nextValue.when(
-          data: (value) => value != null,
-          loading: () => false,
-          error: (_, __) => false));
+    ..listen(getTokenProvider, (state, nextValue) {
+      isAuth.value = AsyncValue.data(nextValue != '');
     })
     ..onDispose(isAuth.dispose);
-  final loginType = ref.watch(authInfoControlerProvider).when(
-      data: (authInfo) => authInfo?.loginType,
-      loading: () => null,
-      error: (error, _) => null);
 
   final router = GoRouter(
     navigatorKey: routerKey,
-    initialLocation: Routes.sighup.url,
+    initialLocation: Routes.login.url,
     refreshListenable: isAuth,
     redirect: (context, state) {
       final authValue = isAuth.value.requireValue;
@@ -59,9 +47,7 @@ GoRouter router(RouterRef ref) {
             GoRoute(
                 path: Routes.exercise.url,
                 name: Routes.exercise.name,
-                builder: (context, state) => loginType == LoginType.personal
-                    ? const ClientViewScreen()
-                    : const ExercisesScreen()),
+                builder: (context, state) => const MultiScreen()),
             GoRoute(
                 path: Routes.settings.url,
                 name: Routes.settings.name,

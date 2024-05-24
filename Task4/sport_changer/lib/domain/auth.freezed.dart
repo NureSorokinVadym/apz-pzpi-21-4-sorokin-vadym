@@ -20,6 +20,7 @@ AuthInfo _$AuthInfoFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$AuthInfo {
+  int? get id => throw _privateConstructorUsedError;
   String get token => throw _privateConstructorUsedError;
   LoginType? get loginType => throw _privateConstructorUsedError;
   List<LoginType> get loginVariants => throw _privateConstructorUsedError;
@@ -39,7 +40,8 @@ abstract class $AuthInfoCopyWith<$Res> {
       _$AuthInfoCopyWithImpl<$Res, AuthInfo>;
   @useResult
   $Res call(
-      {String token,
+      {int? id,
+      String token,
       LoginType? loginType,
       List<LoginType> loginVariants,
       String? email,
@@ -60,6 +62,7 @@ class _$AuthInfoCopyWithImpl<$Res, $Val extends AuthInfo>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = freezed,
     Object? token = null,
     Object? loginType = freezed,
     Object? loginVariants = null,
@@ -68,6 +71,10 @@ class _$AuthInfoCopyWithImpl<$Res, $Val extends AuthInfo>
     Object? surname = freezed,
   }) {
     return _then(_value.copyWith(
+      id: freezed == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int?,
       token: null == token
           ? _value.token
           : token // ignore: cast_nullable_to_non_nullable
@@ -105,7 +112,8 @@ abstract class _$$AuthInfoImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String token,
+      {int? id,
+      String token,
       LoginType? loginType,
       List<LoginType> loginVariants,
       String? email,
@@ -124,6 +132,7 @@ class __$$AuthInfoImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = freezed,
     Object? token = null,
     Object? loginType = freezed,
     Object? loginVariants = null,
@@ -132,6 +141,10 @@ class __$$AuthInfoImplCopyWithImpl<$Res>
     Object? surname = freezed,
   }) {
     return _then(_$AuthInfoImpl(
+      id: freezed == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int?,
       token: null == token
           ? _value.token
           : token // ignore: cast_nullable_to_non_nullable
@@ -164,7 +177,8 @@ class __$$AuthInfoImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$AuthInfoImpl implements _AuthInfo {
   const _$AuthInfoImpl(
-      {required this.token,
+      {this.id,
+      required this.token,
       this.loginType,
       final List<LoginType> loginVariants = const [],
       this.email,
@@ -175,6 +189,8 @@ class _$AuthInfoImpl implements _AuthInfo {
   factory _$AuthInfoImpl.fromJson(Map<String, dynamic> json) =>
       _$$AuthInfoImplFromJson(json);
 
+  @override
+  final int? id;
   @override
   final String token;
   @override
@@ -197,7 +213,7 @@ class _$AuthInfoImpl implements _AuthInfo {
 
   @override
   String toString() {
-    return 'AuthInfo(token: $token, loginType: $loginType, loginVariants: $loginVariants, email: $email, name: $name, surname: $surname)';
+    return 'AuthInfo(id: $id, token: $token, loginType: $loginType, loginVariants: $loginVariants, email: $email, name: $name, surname: $surname)';
   }
 
   @override
@@ -205,6 +221,7 @@ class _$AuthInfoImpl implements _AuthInfo {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$AuthInfoImpl &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.token, token) || other.token == token) &&
             (identical(other.loginType, loginType) ||
                 other.loginType == loginType) &&
@@ -219,6 +236,7 @@ class _$AuthInfoImpl implements _AuthInfo {
   @override
   int get hashCode => Object.hash(
       runtimeType,
+      id,
       token,
       loginType,
       const DeepCollectionEquality().hash(_loginVariants),
@@ -242,7 +260,8 @@ class _$AuthInfoImpl implements _AuthInfo {
 
 abstract class _AuthInfo implements AuthInfo {
   const factory _AuthInfo(
-      {required final String token,
+      {final int? id,
+      required final String token,
       final LoginType? loginType,
       final List<LoginType> loginVariants,
       final String? email,
@@ -252,6 +271,8 @@ abstract class _AuthInfo implements AuthInfo {
   factory _AuthInfo.fromJson(Map<String, dynamic> json) =
       _$AuthInfoImpl.fromJson;
 
+  @override
+  int? get id;
   @override
   String get token;
   @override

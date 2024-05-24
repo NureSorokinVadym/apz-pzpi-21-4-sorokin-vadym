@@ -6,7 +6,7 @@ part of 'personal.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$clientControllerHash() => r'f9b1821de22213eca614af0abe70a592e777ef05';
+String _$clientControllerHash() => r'0c1969c120663d2ef50dda3576d3518c1bc6a0cc';
 
 /// See also [ClientController].
 @ProviderFor(ClientController)

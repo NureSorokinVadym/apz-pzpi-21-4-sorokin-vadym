@@ -74,20 +74,6 @@ class ExercisesScreen extends HookConsumerWidget {
       );
 }
 
-class NewExerciseScreen extends HookConsumerWidget {
-  const NewExerciseScreen({Key? key}) : super(key: key);
-
-  @override
-  Widget build(
-    BuildContext _context,
-    WidgetRef _ref,
-  ) =>
-      newExerciseScreen(
-        _context,
-        _ref,
-      );
-}
-
 class SettingScreen extends HookConsumerWidget {
   const SettingScreen({Key? key}) : super(key: key);
 
@@ -97,6 +83,20 @@ class SettingScreen extends HookConsumerWidget {
     WidgetRef _ref,
   ) =>
       settingScreen(
+        _context,
+        _ref,
+      );
+}
+
+class MultiScreen extends HookConsumerWidget {
+  const MultiScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(
+    BuildContext _context,
+    WidgetRef _ref,
+  ) =>
+      multiScreen(
         _context,
         _ref,
       );

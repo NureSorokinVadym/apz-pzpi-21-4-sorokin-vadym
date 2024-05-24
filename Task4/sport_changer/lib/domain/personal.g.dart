@@ -7,7 +7,7 @@ part of 'personal.dart';
 // **************************************************************************
 
 _$ClientImpl _$$ClientImplFromJson(Map<String, dynamic> json) => _$ClientImpl(
-      id: json['id'] as String,
+      id: (json['id'] as num).toInt(),
       name: json['name'] as String?,
       surname: json['surname'] as String?,
       email: json['email'] as String?,

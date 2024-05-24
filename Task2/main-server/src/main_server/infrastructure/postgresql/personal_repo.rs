@@ -72,7 +72,7 @@ pub async fn get_client_from_personal(
     db: &PgPool,
     personal_id: i32,
 ) -> Result<Vec<User>, sqlx::Error> {
-    let clients: Vec<(i32, String, String, String)> =
+    let clients: Vec<(i32, String, Option<String>, String)> =
         sqlx::query_as("select id, name, surname, email from user_base")
             .fetch_all(db)
             .await?;

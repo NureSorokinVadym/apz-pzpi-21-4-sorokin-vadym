@@ -85,29 +85,25 @@ class AuthInfoControler extends _$AuthInfoControler {
   }
 
   Future<AuthInfo> _getUserInfo(String token) async {
-    final response = await _client.get(
-      Uri.parse('${URL}api/auth/user_info'),
-      headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer $token',
-      },
-    );
+    final headers = {
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Bearer $token',
+    };
 
-    final userTypesResp = await _client.get(
-      Uri.parse('${URL}api/auth/user_types'),
-      headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer $token',
-      },
-    );
+    final response = await _client.get(Uri.parse('${URL}api/auth/user_info'),
+        headers: headers);
+
+    final userTypesResp = await _client
+        .get(Uri.parse('${URL}api/auth/user_types'), headers: headers);
 
     if (response.statusCode == 200 && userTypesResp.statusCode == 200) {
       final data = jsonDecode(response.body);
       data['token'] = token;
-      data['loginVariants'] = jsonDecode(userTypesResp.body);
-      if (data["loginVariants"].isNotEmpty) {
-        data["loginType"] = data["loginVariants"][0];
+      if (userTypesResp.body.isEmpty) {
+        return AuthInfo.fromJson(data);
       }
+      data['loginVariants'] = jsonDecode(userTypesResp.body);
+      data['loginType'] = data['loginVariants'][0];
       return AuthInfo.fromJson(data);
     }
     return AuthInfo(token: token);
@@ -121,4 +117,12 @@ String getToken(GetTokenRef ref) {
         loading: () => '',
         error: (error, _) => '',
       );
+}
+
+@riverpod
+LoginType? getLoginType(GetLoginTypeRef ref) {
+  return ref.watch(authInfoControlerProvider).when(
+      data: (authInfo) => authInfo?.loginType,
+      loading: () => null,
+      error: (error, _) => null);
 }

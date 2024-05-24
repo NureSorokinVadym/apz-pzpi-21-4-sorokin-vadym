@@ -40,7 +40,12 @@ pub mod endpoints {
     }
 }
 
-use endpoints::{create_personal, create_specification, get_specifications};
+use endpoints::*;
 pub fn get_routes() -> Vec<rocket::Route> {
-    routes![create_personal, create_specification, get_specifications]
+    routes![
+        create_personal,
+        create_specification,
+        get_specifications,
+        get_clients
+    ]
 }

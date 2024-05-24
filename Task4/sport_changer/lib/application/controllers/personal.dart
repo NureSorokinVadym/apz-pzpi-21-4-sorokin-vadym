@@ -14,11 +14,17 @@ class ClientController extends _$ClientController {
 
   @override
   Future<List<Client>> build() async {
-    return [];
+    _client = http.Client();
+    return downloadClient();
   }
 
-  downloadClient() async {
+  updateClients() async {
     state = const AsyncValue.loading();
+    final clients = await downloadClient();
+    state = AsyncValue.data(clients);
+  }
+
+  Future<List<Client>> downloadClient() async {
     String token = ref.read(getTokenProvider);
 
     final response = await _client
@@ -27,12 +33,37 @@ class ClientController extends _$ClientController {
       'Accept': 'application/json',
       'Authorization': 'Bearer $token'
     });
+    print(response.body);
+
     if (response.statusCode == 200) {
       final List<Client> clients =
           jsonDecode(response.body).map((e) => Client.fromJson(e)).toList();
-      state = AsyncValue.data(clients);
-    } else {
-      state = AsyncValue.error(response.body, StackTrace.current);
+      return clients;
+    }
+    return [];
+  }
+
+  getClientExercises(int id) async {
+    final data = state.value;
+    if (data == null) return;
+
+    final token = ref.read(getTokenProvider);
+
+    final response = await _client
+        .get(Uri.parse("${URL}api/personal/get_exercises/$id"), headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token'
+    });
+
+    if (response.statusCode == 200) {
+      final List<UserExercise> exercises = jsonDecode(response.body)
+          .map((e) => UserExercise.fromJson(e))
+          .toList();
+      state = AsyncValue.data(data
+          .map((e) => e.id == id ? e.copyWith(exercises: exercises) : e)
+          .toList());
+      return exercises;
     }
   }
 }

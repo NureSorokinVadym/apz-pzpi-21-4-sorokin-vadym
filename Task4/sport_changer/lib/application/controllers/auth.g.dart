@@ -20,7 +20,21 @@ final getTokenProvider = AutoDisposeProvider<String>.internal(
 );
 
 typedef GetTokenRef = AutoDisposeProviderRef<String>;
-String _$authInfoControlerHash() => r'd1d425216257721049db1679061ec7070d8ff8ac';
+String _$getLoginTypeHash() => r'2ea59535d378210ce4ddc576da07a83400856f57';
+
+/// See also [getLoginType].
+@ProviderFor(getLoginType)
+final getLoginTypeProvider = AutoDisposeProvider<LoginType?>.internal(
+  getLoginType,
+  name: r'getLoginTypeProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$getLoginTypeHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef GetLoginTypeRef = AutoDisposeProviderRef<LoginType?>;
+String _$authInfoControlerHash() => r'a848e708f54329feca5bab4e1bca64ab7f79692f';
 
 /// See also [AuthInfoControler].
 @ProviderFor(AuthInfoControler)

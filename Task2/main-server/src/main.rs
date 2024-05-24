@@ -22,9 +22,9 @@ async fn rocket() -> _ {
 
     rocket::build()
         .mount("/auth/", api::authentication::get_routes())
-        .mount("/personal", api::personal::get_routes())
-        .mount("/admin", api::admin::get_routes())
-        .mount("/user", api::user::get_routes())
+        .mount("/personal/", api::personal::get_routes())
+        .mount("/admin/", api::admin::get_routes())
+        .mount("/user/", api::user::get_routes())
         .attach(cors.to_cors().unwrap())
         .manage(pool)
 }

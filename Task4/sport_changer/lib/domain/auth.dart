@@ -8,6 +8,7 @@ enum LoginType { admin, personal }
 @freezed
 class AuthInfo with _$AuthInfo {
   const factory AuthInfo({
+    int? id,
     required String token,
     LoginType? loginType,
     @Default([]) List<LoginType> loginVariants,

@@ -20,7 +20,7 @@ Client _$ClientFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Client {
-  String get id => throw _privateConstructorUsedError;
+  int get id => throw _privateConstructorUsedError;
   String? get name => throw _privateConstructorUsedError;
   String? get surname => throw _privateConstructorUsedError;
   String? get email => throw _privateConstructorUsedError;
@@ -37,7 +37,7 @@ abstract class $ClientCopyWith<$Res> {
       _$ClientCopyWithImpl<$Res, Client>;
   @useResult
   $Res call(
-      {String id,
+      {int id,
       String? name,
       String? surname,
       String? email,
@@ -67,7 +67,7 @@ class _$ClientCopyWithImpl<$Res, $Val extends Client>
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       name: freezed == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -96,7 +96,7 @@ abstract class _$$ClientImplCopyWith<$Res> implements $ClientCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {String id,
+      {int id,
       String? name,
       String? surname,
       String? email,
@@ -124,7 +124,7 @@ class __$$ClientImplCopyWithImpl<$Res>
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       name: freezed == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -160,7 +160,7 @@ class _$ClientImpl implements _Client {
       _$$ClientImplFromJson(json);
 
   @override
-  final String id;
+  final int id;
   @override
   final String? name;
   @override
@@ -215,7 +215,7 @@ class _$ClientImpl implements _Client {
 
 abstract class _Client implements Client {
   const factory _Client(
-      {required final String id,
+      {required final int id,
       final String? name,
       final String? surname,
       final String? email,
@@ -224,7 +224,7 @@ abstract class _Client implements Client {
   factory _Client.fromJson(Map<String, dynamic> json) = _$ClientImpl.fromJson;
 
   @override
-  String get id;
+  int get id;
   @override
   String? get name;
   @override

@@ -8,6 +8,7 @@ part of 'auth.dart';
 
 _$AuthInfoImpl _$$AuthInfoImplFromJson(Map<String, dynamic> json) =>
     _$AuthInfoImpl(
+      id: (json['id'] as num?)?.toInt(),
       token: json['token'] as String,
       loginType: $enumDecodeNullable(_$LoginTypeEnumMap, json['loginType']),
       loginVariants: (json['loginVariants'] as List<dynamic>?)
@@ -21,6 +22,7 @@ _$AuthInfoImpl _$$AuthInfoImplFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$$AuthInfoImplToJson(_$AuthInfoImpl instance) =>
     <String, dynamic>{
+      'id': instance.id,
       'token': instance.token,
       'loginType': _$LoginTypeEnumMap[instance.loginType],
       'loginVariants':
