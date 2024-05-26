@@ -19,7 +19,10 @@ class Client with _$Client {
 @freezed
 class Exercise with _$Exercise {
   const factory Exercise(
-      {required int id, required String name, String? measurement}) = _Exercise;
+      {int? id,
+      required String name,
+      String? measurement,
+      int? exerciseTypeId}) = _Exercise;
 
   factory Exercise.fromJson(Map<String, dynamic> json) =>
       _$ExerciseFromJson(json);
@@ -31,7 +34,7 @@ class Exercise with _$Exercise {
 @freezed
 class UserExercise with _$UserExercise {
   const factory UserExercise(
-      {required String id,
+      {required int id,
       Exercise? exercise,
       @Default(Duration()) Duration duration,
       @Default(0) int number,

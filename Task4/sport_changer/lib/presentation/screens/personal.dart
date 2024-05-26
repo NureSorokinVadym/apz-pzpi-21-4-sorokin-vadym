@@ -3,8 +3,8 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import 'package:go_router/go_router.dart';
 import 'package:functional_widget_annotation/functional_widget_annotation.dart';
 import 'package:sport_changer/application/controllers/personal.dart';
-import 'package:sport_changer/domain/personal.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:sport_changer/presentation/router/routes.dart';
 
 part 'personal.g.dart';
 
@@ -22,111 +22,107 @@ Widget clientViewScreen(BuildContext context, WidgetRef ref) {
         },
         child: const Icon(Icons.refresh),
       ),
-      body: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Center(
-            child: clients.when(
-                data: (clients) => ListView.builder(
-                    itemCount: clients.length,
-                    itemBuilder: (context, index) {
-                      final client = clients[index];
-                      return ListTile(
-                        title: Text(client.name ?? "No name"),
-                        subtitle: Text(client.surname ?? "No surname"),
-                        onTap: () {
-                          // context.go(client.id);
-                        },
-                      );
-                    }),
-                loading: () => const CircularProgressIndicator(),
-                error: (error, stack) => Text("Error: $error")),
-          )));
-}
-
-@hcwidget
-Widget clientScreen(BuildContext context, WidgetRef ref,
-    {required Client client}) {
-  useEffect(() {
-    ref.read(clientControllerProvider.notifier).getClientExercises(client.id);
-    return null;
-  }, []);
-
-  return Scaffold(
-      appBar: AppBar(
-        title: const Text("Client Screen"),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          context.goNamed("addExercise");
-        },
-        child: const Icon(Icons.add),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Center(
-          child: Column(
-            children: [
-              Text("Name: ${client.name}"),
-              Text("Surname: ${client.surname}"),
-              Text("Email: ${client.email}"),
-              Text("Exercises total number: ${client.exercises.length}"),
-              ListView.builder(
-                itemCount: client.exercises.length,
+      body: Center(
+        child: clients.when(
+            data: (clients) => ListView.builder(
+                itemCount: clients.length,
                 itemBuilder: (context, index) {
-                  final exercise = client.exercises[index];
+                  final client = clients[index];
                   return ListTile(
-                    title: Text(exercise.exercise?.name ?? "No name"),
-                    subtitle: Text("Date: ${exercise.date}"),
+                    title: Text(client.name ?? "No name"),
+                    subtitle: Text(client.surname ?? "No surname"),
                     onTap: () {
-                      // context.go(exercise.id);
+                      context.push(Routes.client.url
+                          .replaceFirst(":id", client.id.toString()));
                     },
                   );
-                },
-              )
-            ],
-          ),
-        ),
+                }),
+            loading: () => const CircularProgressIndicator(),
+            error: (error, stack) => Text("Error: $error")),
       ));
 }
 
 @hcwidget
-Widget newExerciseScreen(BuildContext context, WidgetRef ref) {
-  final tabController = useTabController(initialLength: 10);
+Widget clientScreen(BuildContext context, WidgetRef ref, {required int id}) {
+  final client = ref.watch(clientControllerProvider.select((value) => value
+      .whenData((value) => value.firstWhere((element) => element.id == id))));
+
+  ref.read(clientControllerProvider.notifier).getClientExercises(id);
 
   return Scaffold(
     appBar: AppBar(
-      title: const Text("Choose Exercise"),
-      bottom: TabBar(
-        isScrollable: true,
-        controller: tabController,
-        tabs: const [
-          Tab(text: "Tab 1"),
-          Tab(text: "Tab 2"),
-          Tab(text: "Tab 3"),
-          Tab(text: "Tab 4"),
-          Tab(text: "Tab 5"),
-          Tab(text: "Tab 6"),
-          Tab(text: "Tab 7"),
-          Tab(text: "Tab 8"),
-          Tab(text: "Tab 9"),
-          Tab(text: "Tab 10"),
-        ],
-      ),
+      title: const Text("Client Screen"),
     ),
-    body: TabBarView(
-      controller: tabController,
-      children: const [
-        Center(child: Text("Tab 1")),
-        Center(child: Text("Tab 2")),
-        Center(child: Text("Tab 3")),
-        Center(child: Text("Tab 4")),
-        Center(child: Text("Tab 5")),
-        Center(child: Text("Tab 6")),
-        Center(child: Text("Tab 7")),
-        Center(child: Text("Tab 8")),
-        Center(child: Text("Tab 9")),
-        Center(child: Text("Tab 10")),
-      ],
+    floatingActionButton: FloatingActionButton(
+      onPressed: () {
+        context.pushNamed("addExercise", pathParameters: {"id": id.toString()});
+      },
+      child: const Icon(Icons.add),
     ),
+    body: Center(
+        child: client.when(
+      data: (client) {
+        final name = client.name ?? "No name";
+        final surname = client.surname ?? "No surname";
+        return ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          children: [
+            Text("Name: $name"),
+            Text("Surname: $surname"),
+            ...client.exercises.where((e) => e.exercise != null).map((e) {
+              final duration = e.duration == const Duration()
+                  ? "Not started"
+                  : "Duration: ${e.duration}";
+              final exerciseTypesName = ref.watch(
+                  getExerciseTypeNameProvider(id: e.exercise!.exerciseTypeId!));
+              final title = "${e.exercise!.name} [$exerciseTypesName]";
+              return ListTile(
+                title: ListTile(
+                    title: Text(title),
+                    subtitle: Text(
+                        "$duration, Measurement: ${e.exercise!.measurement}")),
+              );
+            })
+          ],
+        );
+      },
+      loading: () => const CircularProgressIndicator(),
+      error: (error, stack) => Text("Error: $error"),
+    )),
   );
+}
+
+@hcwidget
+Widget newExerciseScreen(BuildContext context, WidgetRef ref,
+    {required int id}) {
+  final exercises = ref.watch(getExercisesProvider);
+
+  return Scaffold(
+      appBar: AppBar(
+        title: const Text("Choose Exercise"),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Center(
+            child: exercises.when(
+          loading: () => const CircularProgressIndicator(),
+          error: (error, _) => Text("Error: $error"),
+          data: (data) => ListView.separated(
+            itemCount: data.length,
+            separatorBuilder: (BuildContext context, int index) {
+              return const Divider();
+            },
+            itemBuilder: (BuildContext context, int index) {
+              return TextButton(
+                  child: Text(data[index].name),
+                  onPressed: () {
+                    ref
+                        .read(clientControllerProvider.notifier)
+                        .addExercise(id, data[index].id!);
+                    context.pop();
+                  });
+            },
+          ),
+        )),
+      ));
 }

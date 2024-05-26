@@ -60,20 +60,6 @@ class ShellScreen extends HookConsumerWidget {
       );
 }
 
-class ExercisesScreen extends HookConsumerWidget {
-  const ExercisesScreen({Key? key}) : super(key: key);
-
-  @override
-  Widget build(
-    BuildContext _context,
-    WidgetRef _ref,
-  ) =>
-      exercisesScreen(
-        _context,
-        _ref,
-      );
-}
-
 class SettingScreen extends HookConsumerWidget {
   const SettingScreen({Key? key}) : super(key: key);
 

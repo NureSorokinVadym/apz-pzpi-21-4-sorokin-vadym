@@ -85,10 +85,10 @@ pub async fn give_exercice(
     if let None = user_exercise.user_id {
         user_exercise.user_id = Some(user_id);
     }
-    personal_repo::give_exercice(&mut db, &user_exercise)
+    let id = personal_repo::give_exercice(&mut db, &user_exercise)
         .await
         .unwrap();
-    Ok(10)
+    Ok(id)
 }
 
 pub async fn create_exercise_type(
@@ -103,10 +103,10 @@ pub async fn create_exercise_type(
     if user_access_level < 8 {
         return Err("User access level is not enough".to_string());
     }
-    personal_repo::create_exercice_type(&mut db, &exercise_type)
+    let id = personal_repo::create_exercice_type(&mut db, &exercise_type)
         .await
         .unwrap();
-    Ok(10)
+    Ok(id)
 }
 
 pub async fn get_exercises_types(db: &PgPool) -> Vec<(i32, String)> {

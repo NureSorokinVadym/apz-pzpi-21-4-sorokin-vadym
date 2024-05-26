@@ -18,7 +18,7 @@ pub mod endpoints {
         Json::from(DefaultResponse::from(result))
     }
 
-    #[post("/create_exercice", format = "json", data = "<exercise>")]
+    #[post("/create_exercise", format = "json", data = "<exercise>")]
     pub async fn create_exercice(
         db: &State<PgPool>,
         exercise: Json<Exercise>,
@@ -29,7 +29,7 @@ pub mod endpoints {
         Json::from(DefaultResponse::from(result))
     }
 
-    #[post("/create_exercice_type", format = "json", data = "<exercise_type>")]
+    #[post("/create_exercise_type", format = "json", data = "<exercise_type>")]
     pub async fn create_exercice_type(
         db: &State<PgPool>,
         exercise_type: Json<ExerciceType>,

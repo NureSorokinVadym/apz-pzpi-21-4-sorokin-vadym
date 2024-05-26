@@ -3,28 +3,15 @@ import "package:hooks_riverpod/hooks_riverpod.dart";
 import 'package:flutter_hooks/flutter_hooks.dart';
 import "package:go_router/go_router.dart";
 import 'package:functional_widget_annotation/functional_widget_annotation.dart';
+import 'package:gap/gap.dart';
 import 'package:sport_changer/presentation/router/routes.dart';
 
 import 'package:sport_changer/application/controllers/auth.dart';
 import 'package:sport_changer/domain/auth.dart';
 import './personal.dart';
+import './admin.dart';
 
 part 'main_screen.g.dart';
-
-@hcwidget
-Widget userInfo(BuildContext context, WidgetRef ref,
-    {required AuthInfo authInfo}) {
-  return Column(
-    children: [
-      Text("Email: ${authInfo.email}"),
-      Text("Name: ${authInfo.name}"),
-      Text("Surname: ${authInfo.surname}"),
-      Text("Token: ${authInfo.token}"),
-      Text("Login type: ${authInfo.loginType}"),
-      Text("Login variants: ${authInfo.loginVariants}")
-    ],
-  );
-}
 
 @hcwidget
 Widget mainScreen(BuildContext context, WidgetRef ref) {
@@ -67,7 +54,7 @@ Widget shellScreen(BuildContext context, WidgetRef ref,
       items: const [
         BottomNavigationBarItem(
           icon: Icon(Icons.fitness_center),
-          label: "Exercises",
+          label: "Pannel",
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.settings),
@@ -88,18 +75,18 @@ Widget shellScreen(BuildContext context, WidgetRef ref,
 }
 
 @hcwidget
-Widget exercisesScreen(BuildContext context, WidgetRef ref) {
-  return Scaffold(
-    appBar: AppBar(
-      title: Text("Exercises Screen"),
-    ),
-    body: Center(
-      child: Text("Exercises"),
-    ),
-    floatingActionButton: FloatingActionButton(
-      onPressed: () => context.push("/exercise/add"),
-      child: const Icon(Icons.add),
-    ),
+Widget userInfo(BuildContext context, WidgetRef ref,
+    {required AuthInfo authInfo}) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text("Email: ${authInfo.email}"),
+      Text("Name: ${authInfo.name}"),
+      Text("Surname: ${authInfo.surname}"),
+      Text("Login type: ${authInfo.loginType?.name}"),
+      Text(
+          "Login variants: ${authInfo.loginVariants.map((l) => l.name).join(", ")}"),
+    ],
   );
 }
 
@@ -110,25 +97,33 @@ Widget settingScreen(BuildContext context, WidgetRef ref) {
   return Scaffold(
     appBar: AppBar(
       title: const Text("Settings"),
+      actions: [
+        IconButton(
+            onPressed: () {
+              ref.read(authInfoControlerProvider.notifier).deleteToken();
+            },
+            icon: const Icon(Icons.logout))
+      ],
     ),
     body: Padding(
       padding: const EdgeInsets.all(16),
-      child: Center(
-        child: Column(
-          children: [
-            authInfo.when(
-                data: (value) => value == null
-                    ? const Text("Wait")
-                    : UserInfo(authInfo: value),
-                loading: () => const CircularProgressIndicator(),
-                error: (error, stack) => Text("Error: $error")),
-            TextButton(
-                child: const Text("Go to Start"),
-                onPressed: () {
-                  ref.read(authInfoControlerProvider.notifier).deleteToken();
-                }),
-          ],
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          authInfo.when(
+              data: (value) => value == null
+                  ? const Text("Wait")
+                  : UserInfo(authInfo: value),
+              loading: () => const CircularProgressIndicator(),
+              error: (error, stack) => Text("Error: $error")),
+          const Gap(32),
+          TextButton(
+            onPressed: () {
+              ref.read(authInfoControlerProvider.notifier).changeUserType();
+            },
+            child: const Text("Change login type"),
+          )
+        ],
       ),
     ),
   );
@@ -139,5 +134,5 @@ Widget multiScreen(BuildContext context, WidgetRef ref) {
   final userType = ref.watch(getLoginTypeProvider);
   return userType == LoginType.personal
       ? const ClientViewScreen()
-      : const SettingScreen();
+      : const AdminMainScreen();
 }

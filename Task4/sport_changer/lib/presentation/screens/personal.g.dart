@@ -23,10 +23,10 @@ class ClientViewScreen extends HookConsumerWidget {
 class ClientScreen extends HookConsumerWidget {
   const ClientScreen({
     Key? key,
-    required this.client,
+    required this.id,
   }) : super(key: key);
 
-  final Client client;
+  final int id;
 
   @override
   Widget build(
@@ -36,12 +36,17 @@ class ClientScreen extends HookConsumerWidget {
       clientScreen(
         _context,
         _ref,
-        client: client,
+        id: id,
       );
 }
 
 class NewExerciseScreen extends HookConsumerWidget {
-  const NewExerciseScreen({Key? key}) : super(key: key);
+  const NewExerciseScreen({
+    Key? key,
+    required this.id,
+  }) : super(key: key);
+
+  final int id;
 
   @override
   Widget build(
@@ -51,5 +56,6 @@ class NewExerciseScreen extends HookConsumerWidget {
       newExerciseScreen(
         _context,
         _ref,
+        id: id,
       );
 }

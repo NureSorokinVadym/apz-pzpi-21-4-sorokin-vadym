@@ -1,3 +1,4 @@
+use crate::domain::dto::*;
 use sqlx::PgPool;
 
 pub async fn create_admin(
@@ -27,4 +28,21 @@ pub async fn is_admin(db: &PgPool, user_id: i32) -> Result<bool, sqlx::Error> {
         .fetch_one(db)
         .await?;
     Ok(row.0 > 0)
+}
+
+pub async fn create_personal(db: &PgPool, personal: &Personal) -> Result<i32, sqlx::Error> {
+    let _result = sqlx::query("insert into personal (user_id, specification_id) values ($1, $2)")
+        .bind(personal.user_id)
+        .bind(personal.specification_id)
+        .execute(db)
+        .await?;
+    Ok(5)
+}
+
+pub async fn delete_exercise(db: &PgPool, id: &Id) -> Result<(), sqlx::Error> {
+    let _result = sqlx::query("delete from exercice where id = $1")
+        .bind(id.id)
+        .execute(db)
+        .await?;
+    Ok(())
 }

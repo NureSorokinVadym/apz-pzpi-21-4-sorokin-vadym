@@ -84,6 +84,20 @@ class AuthInfoControler extends _$AuthInfoControler {
     state = const AsyncValue.data(null);
   }
 
+  changeUserType() async {
+    final authInfo = state.when(
+        data: (authInfo) => authInfo,
+        loading: () => null,
+        error: (error, _) => null);
+    if (authInfo == null || authInfo.loginVariants.isEmpty) {
+      return;
+    }
+    final index = authInfo.loginVariants.indexOf(authInfo.loginType!);
+    final newIndex = (index + 1) % authInfo.loginVariants.length;
+    state = AsyncValue.data(
+        authInfo.copyWith(loginType: authInfo.loginVariants[newIndex]));
+  }
+
   Future<AuthInfo> _getUserInfo(String token) async {
     final headers = {
       'Content-Type': 'application/json; charset=UTF-8',

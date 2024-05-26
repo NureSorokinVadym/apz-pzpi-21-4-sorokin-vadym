@@ -9,6 +9,11 @@ class Routes {
   static final login = Route('/auth/log_in', 'login');
   static final sighup = Route('/auth/sighup', 'sighup');
   static final exercise = Route('/exercise', 'exercise');
-  static final addExercise = Route('/exercise/add', 'addExercise');
+  static final addExercise = Route('/exercise/:id/add', 'addExercise');
   static final settings = Route('/settings', 'settings');
+  static final client = Route('/client/:id', 'client');
+  static final adminClients = Route('/admin/clients', 'adminClients');
+  static final adminExercises = Route('/admin/exercises', 'adminExercises');
+  static final adminCreateExercises =
+      Route('/admin/exercises/create', 'adminCreateExercises');
 }

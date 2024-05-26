@@ -28,9 +28,10 @@ Map<String, dynamic> _$$ClientImplToJson(_$ClientImpl instance) =>
 
 _$ExerciseImpl _$$ExerciseImplFromJson(Map<String, dynamic> json) =>
     _$ExerciseImpl(
-      id: (json['id'] as num).toInt(),
+      id: (json['id'] as num?)?.toInt(),
       name: json['name'] as String,
       measurement: json['measurement'] as String?,
+      exerciseTypeId: (json['exerciseTypeId'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$$ExerciseImplToJson(_$ExerciseImpl instance) =>
@@ -38,11 +39,12 @@ Map<String, dynamic> _$$ExerciseImplToJson(_$ExerciseImpl instance) =>
       'id': instance.id,
       'name': instance.name,
       'measurement': instance.measurement,
+      'exerciseTypeId': instance.exerciseTypeId,
     };
 
 _$UserExerciseImpl _$$UserExerciseImplFromJson(Map<String, dynamic> json) =>
     _$UserExerciseImpl(
-      id: json['id'] as String,
+      id: (json['id'] as num).toInt(),
       exercise: json['exercise'] == null
           ? null
           : Exercise.fromJson(json['exercise'] as Map<String, dynamic>),

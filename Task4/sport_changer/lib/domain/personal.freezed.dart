@@ -245,9 +245,10 @@ Exercise _$ExerciseFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Exercise {
-  int get id => throw _privateConstructorUsedError;
+  int? get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String? get measurement => throw _privateConstructorUsedError;
+  int? get exerciseTypeId => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -260,7 +261,7 @@ abstract class $ExerciseCopyWith<$Res> {
   factory $ExerciseCopyWith(Exercise value, $Res Function(Exercise) then) =
       _$ExerciseCopyWithImpl<$Res, Exercise>;
   @useResult
-  $Res call({int id, String name, String? measurement});
+  $Res call({int? id, String name, String? measurement, int? exerciseTypeId});
 }
 
 /// @nodoc
@@ -276,15 +277,16 @@ class _$ExerciseCopyWithImpl<$Res, $Val extends Exercise>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
+    Object? id = freezed,
     Object? name = null,
     Object? measurement = freezed,
+    Object? exerciseTypeId = freezed,
   }) {
     return _then(_value.copyWith(
-      id: null == id
+      id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -293,6 +295,10 @@ class _$ExerciseCopyWithImpl<$Res, $Val extends Exercise>
           ? _value.measurement
           : measurement // ignore: cast_nullable_to_non_nullable
               as String?,
+      exerciseTypeId: freezed == exerciseTypeId
+          ? _value.exerciseTypeId
+          : exerciseTypeId // ignore: cast_nullable_to_non_nullable
+              as int?,
     ) as $Val);
   }
 }
@@ -305,7 +311,7 @@ abstract class _$$ExerciseImplCopyWith<$Res>
       __$$ExerciseImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int id, String name, String? measurement});
+  $Res call({int? id, String name, String? measurement, int? exerciseTypeId});
 }
 
 /// @nodoc
@@ -319,15 +325,16 @@ class __$$ExerciseImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
+    Object? id = freezed,
     Object? name = null,
     Object? measurement = freezed,
+    Object? exerciseTypeId = freezed,
   }) {
     return _then(_$ExerciseImpl(
-      id: null == id
+      id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -336,6 +343,10 @@ class __$$ExerciseImplCopyWithImpl<$Res>
           ? _value.measurement
           : measurement // ignore: cast_nullable_to_non_nullable
               as String?,
+      exerciseTypeId: freezed == exerciseTypeId
+          ? _value.exerciseTypeId
+          : exerciseTypeId // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 }
@@ -344,21 +355,23 @@ class __$$ExerciseImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$ExerciseImpl implements _Exercise {
   const _$ExerciseImpl(
-      {required this.id, required this.name, this.measurement});
+      {this.id, required this.name, this.measurement, this.exerciseTypeId});
 
   factory _$ExerciseImpl.fromJson(Map<String, dynamic> json) =>
       _$$ExerciseImplFromJson(json);
 
   @override
-  final int id;
+  final int? id;
   @override
   final String name;
   @override
   final String? measurement;
+  @override
+  final int? exerciseTypeId;
 
   @override
   String toString() {
-    return 'Exercise(id: $id, name: $name, measurement: $measurement)';
+    return 'Exercise(id: $id, name: $name, measurement: $measurement, exerciseTypeId: $exerciseTypeId)';
   }
 
   @override
@@ -369,12 +382,15 @@ class _$ExerciseImpl implements _Exercise {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.measurement, measurement) ||
-                other.measurement == measurement));
+                other.measurement == measurement) &&
+            (identical(other.exerciseTypeId, exerciseTypeId) ||
+                other.exerciseTypeId == exerciseTypeId));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, measurement);
+  int get hashCode =>
+      Object.hash(runtimeType, id, name, measurement, exerciseTypeId);
 
   @JsonKey(ignore: true)
   @override
@@ -392,19 +408,22 @@ class _$ExerciseImpl implements _Exercise {
 
 abstract class _Exercise implements Exercise {
   const factory _Exercise(
-      {required final int id,
+      {final int? id,
       required final String name,
-      final String? measurement}) = _$ExerciseImpl;
+      final String? measurement,
+      final int? exerciseTypeId}) = _$ExerciseImpl;
 
   factory _Exercise.fromJson(Map<String, dynamic> json) =
       _$ExerciseImpl.fromJson;
 
   @override
-  int get id;
+  int? get id;
   @override
   String get name;
   @override
   String? get measurement;
+  @override
+  int? get exerciseTypeId;
   @override
   @JsonKey(ignore: true)
   _$$ExerciseImplCopyWith<_$ExerciseImpl> get copyWith =>
@@ -417,7 +436,7 @@ UserExercise _$UserExerciseFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$UserExercise {
-  String get id => throw _privateConstructorUsedError;
+  int get id => throw _privateConstructorUsedError;
   Exercise? get exercise => throw _privateConstructorUsedError;
   Duration get duration => throw _privateConstructorUsedError;
   int get number => throw _privateConstructorUsedError;
@@ -438,7 +457,7 @@ abstract class $UserExerciseCopyWith<$Res> {
       _$UserExerciseCopyWithImpl<$Res, UserExercise>;
   @useResult
   $Res call(
-      {String id,
+      {int id,
       Exercise? exercise,
       Duration duration,
       int number,
@@ -474,7 +493,7 @@ class _$UserExerciseCopyWithImpl<$Res, $Val extends UserExercise>
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       exercise: freezed == exercise
           ? _value.exercise
           : exercise // ignore: cast_nullable_to_non_nullable
@@ -524,7 +543,7 @@ abstract class _$$UserExerciseImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String id,
+      {int id,
       Exercise? exercise,
       Duration duration,
       int number,
@@ -559,7 +578,7 @@ class __$$UserExerciseImplCopyWithImpl<$Res>
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       exercise: freezed == exercise
           ? _value.exercise
           : exercise // ignore: cast_nullable_to_non_nullable
@@ -604,7 +623,7 @@ class _$UserExerciseImpl implements _UserExercise {
       _$$UserExerciseImplFromJson(json);
 
   @override
-  final String id;
+  final int id;
   @override
   final Exercise? exercise;
   @override
@@ -664,7 +683,7 @@ class _$UserExerciseImpl implements _UserExercise {
 
 abstract class _UserExercise implements UserExercise {
   const factory _UserExercise(
-      {required final String id,
+      {required final int id,
       final Exercise? exercise,
       final Duration duration,
       final int number,
@@ -676,7 +695,7 @@ abstract class _UserExercise implements UserExercise {
       _$UserExerciseImpl.fromJson;
 
   @override
-  String get id;
+  int get id;
   @override
   Exercise? get exercise;
   @override

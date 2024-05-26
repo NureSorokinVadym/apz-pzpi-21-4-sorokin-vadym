@@ -3,6 +3,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sport_changer/presentation/screens/main_screen.dart';
 import 'package:sport_changer/presentation/screens/authentication.dart';
+import 'package:sport_changer/presentation/screens/personal.dart';
+import 'package:sport_changer/presentation/screens/admin.dart';
 import 'package:sport_changer/application/controllers/auth.dart';
 import './routes.dart';
 
@@ -39,7 +41,17 @@ GoRouter router(RouterRef ref) {
       GoRoute(
         path: Routes.addExercise.url,
         name: Routes.addExercise.name,
-        builder: (context, state) => const NewExerciseScreen(),
+        builder: (context, state) =>
+            NewExerciseScreen(id: int.parse(state.pathParameters['id']!)),
+      ),
+      GoRoute(
+        path: Routes.client.url,
+        name: Routes.client.name,
+        builder: (context, state) {
+          final id = state.pathParameters['id'];
+          if (id == null) return const Text("Error");
+          return ClientScreen(id: int.parse(id));
+        },
       ),
       ShellRoute(
           navigatorKey: shellKey,
@@ -63,6 +75,20 @@ GoRouter router(RouterRef ref) {
         path: Routes.sighup.url,
         name: Routes.sighup.name,
         builder: (context, state) => const SighUpScreen(),
+      ),
+      GoRoute(
+          path: Routes.adminClients.url,
+          name: Routes.adminClients.name,
+          builder: (context, state) => const AdminClientsScreen()),
+      GoRoute(
+        path: Routes.adminExercises.url,
+        name: Routes.adminExercises.name,
+        builder: (context, state) => const AdminExercisesScreen(),
+      ),
+      GoRoute(
+        path: Routes.adminCreateExercises.url,
+        name: Routes.adminCreateExercises.name,
+        builder: (context, state) => const CreateExercise(),
       )
     ],
   );

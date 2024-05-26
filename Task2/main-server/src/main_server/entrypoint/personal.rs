@@ -1,6 +1,7 @@
 pub mod endpoints {
     use crate::application::personal as use_cases;
     use crate::entrypoint::{ApiKey, Json};
+    use std::collections::HashMap;
 
     use rocket::State;
     use sqlx::PgPool;
@@ -28,7 +29,7 @@ pub mod endpoints {
     }
 
     #[get("/specifications")]
-    pub async fn get_specifications(db: &State<PgPool>) -> Json<Vec<(i32, String)>> {
+    pub async fn get_specifications(db: &State<PgPool>) -> Json<HashMap<i32, String>> {
         let specifications = use_cases::get_specifications(db).await;
         Json::from(specifications)
     }
@@ -38,6 +39,33 @@ pub mod endpoints {
         let clients = use_cases::get_clients(db, token.into()).await;
         Json::from(clients)
     }
+
+    #[get("/get_exercises/<user_id>")]
+    pub async fn get_exercises(
+        db: &State<PgPool>,
+        api: ApiKey<'_>,
+        user_id: i32,
+    ) -> Json<Vec<ExerciseUser>> {
+        let exercises = use_cases::get_client_exercises(db, api.into(), user_id).await;
+        Json::from(exercises)
+    }
+
+    #[get("/get_exercises_list")]
+    pub async fn get_exercises_list(db: &State<PgPool>) -> Json<Vec<Exercise>> {
+        let exercises = use_cases::get_exercises_list(db).await;
+        Json::from(exercises)
+    }
+
+    #[post("/add_exercise", format = "json", data = "<pair>")]
+    pub async fn add_exercise(db: &State<PgPool>, api: ApiKey<'_>, pair: Json<UserExercisePair>) {
+        let _result = use_cases::add_exercise(db, api.into(), &pair).await;
+    }
+
+    #[get("/get_exercise_types")]
+    pub async fn get_exercise_types(db: &State<PgPool>) -> Json<HashMap<i32, String>> {
+        let types = use_cases::get_exercise_types(db).await;
+        Json::from(types)
+    }
 }
 
 use endpoints::*;
@@ -46,6 +74,10 @@ pub fn get_routes() -> Vec<rocket::Route> {
         create_personal,
         create_specification,
         get_specifications,
-        get_clients
+        get_clients,
+        get_exercises,
+        get_exercises_list,
+        add_exercise,
+        get_exercise_types
     ]
 }

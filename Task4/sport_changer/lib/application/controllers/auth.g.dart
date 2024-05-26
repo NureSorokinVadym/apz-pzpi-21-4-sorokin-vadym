@@ -34,7 +34,7 @@ final getLoginTypeProvider = AutoDisposeProvider<LoginType?>.internal(
 );
 
 typedef GetLoginTypeRef = AutoDisposeProviderRef<LoginType?>;
-String _$authInfoControlerHash() => r'a848e708f54329feca5bab4e1bca64ab7f79692f';
+String _$authInfoControlerHash() => r'b5739bf7b26ca4a96aadb53383dd0bbb0b842949';
 
 /// See also [AuthInfoControler].
 @ProviderFor(AuthInfoControler)
