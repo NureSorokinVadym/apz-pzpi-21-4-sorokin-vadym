@@ -137,3 +137,11 @@ pub async fn get_user_types(db: &PgPool, user_id: i32) -> Vec<String> {
     }
     response
 }
+
+pub async fn get_exercises(db: &PgPool, token: &str) -> Result<Vec<ExerciseUser>, String> {
+    let user_id = auth::validate_token(token)?;
+    let exercises = personal_repo::get_client_exercises(db, user_id)
+        .await
+        .unwrap();
+    Ok(exercises)
+}

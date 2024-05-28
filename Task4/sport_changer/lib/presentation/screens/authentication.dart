@@ -6,6 +6,7 @@ import 'package:functional_widget_annotation/functional_widget_annotation.dart';
 import 'package:sport_changer/presentation/router/routes.dart';
 
 import 'package:sport_changer/application/controllers/auth.dart';
+import 'package:sport_changer/application/server_setting.dart';
 
 part 'authentication.g.dart';
 
@@ -19,10 +20,11 @@ Widget sighUpScreen(BuildContext context, WidgetRef ref) {
   return Scaffold(
       appBar: AppBar(
         title: const Text("Sigh up"),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => context.go(Routes.login.url),
-        child: const Icon(Icons.add),
+        actions: [
+          IconButton(
+              onPressed: () => context.go(Routes.login.url),
+              icon: const Icon(Icons.login))
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -54,6 +56,8 @@ Widget sighUpScreen(BuildContext context, WidgetRef ref) {
                           passwordController.text,
                           nameController.text,
                           surnameController.text)),
+              const Spacer(),
+              const ChangeUrlSetting(),
             ],
           ),
         ),
@@ -68,10 +72,11 @@ Widget logInScreen(BuildContext context, WidgetRef ref) {
   return Scaffold(
       appBar: AppBar(
         title: const Text("Login"),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => context.go(Routes.sighup.url),
-        child: const Icon(Icons.minimize),
+        actions: [
+          IconButton(
+              onPressed: () => context.go(Routes.sighup.url),
+              icon: const Icon(Icons.app_registration))
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -92,8 +97,30 @@ Widget logInScreen(BuildContext context, WidgetRef ref) {
                       .read(authInfoControlerProvider.notifier)
                       .requestLogin(
                           emailController.text, passwordController.text)),
+              const Spacer(),
+              const ChangeUrlSetting()
             ],
           ),
         ),
       ));
+}
+
+@hcwidget
+Widget changeUrlSetting(BuildContext context, WidgetRef ref) {
+  final urlController = useTextEditingController();
+  urlController.text = ref.watch(serverSettingProvider).url;
+
+  return Column(
+    children: [
+      TextField(
+        controller: urlController,
+        decoration: const InputDecoration(labelText: "Url"),
+      ),
+      TextButton(
+          child: const Text("Change"),
+          onPressed: () => ref
+              .read(serverSettingProvider.notifier)
+              .changeUrl(urlController.text)),
+    ],
+  );
 }

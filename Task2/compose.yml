@@ -6,8 +6,16 @@ services:
     depends_on:
       - main-service
       - ai-service
+    volumes:
+      - ./nginx/static/:/static
 
   main-service:
+    build: ./main-server/
+    expose:
+      - "8000"
+    depends_on:
+      - database
+  second-main-service:
     build: ./main-server/
     expose:
       - "8000"

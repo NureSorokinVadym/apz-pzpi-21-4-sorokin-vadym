@@ -83,6 +83,15 @@ pub mod endpoints {
         let result = use_cases::create_reward(db, api_key.into(), &reward).await;
         Json::from(DefaultResponse::from(result))
     }
+
+    #[get("/get_exercises")]
+    pub async fn get_exercises(db: &State<PgPool>, token: ApiKey<'_>) -> Json<Vec<ExerciseUser>> {
+        let exercises = use_cases::get_exercises(db, token.into()).await;
+        match exercises {
+            Ok(exs) => Json::from(exs),
+            Err(_) => Json::from(vec![]),
+        }
+    }
 }
 
 pub fn get_routes() -> Vec<rocket::Route> {
@@ -95,5 +104,6 @@ pub fn get_routes() -> Vec<rocket::Route> {
         endpoints::give_me_exercise,
         endpoints::create_exercice_type,
         endpoints::get_exercises_types,
+        endpoints::get_exercises
     ]
 }

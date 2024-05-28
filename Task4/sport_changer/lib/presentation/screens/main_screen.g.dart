@@ -6,26 +6,6 @@ part of 'main_screen.dart';
 // FunctionalWidgetGenerator
 // **************************************************************************
 
-class UserInfo extends HookConsumerWidget {
-  const UserInfo({
-    Key? key,
-    required this.authInfo,
-  }) : super(key: key);
-
-  final AuthInfo authInfo;
-
-  @override
-  Widget build(
-    BuildContext _context,
-    WidgetRef _ref,
-  ) =>
-      userInfo(
-        _context,
-        _ref,
-        authInfo: authInfo,
-      );
-}
-
 class MainScreen extends HookConsumerWidget {
   const MainScreen({Key? key}) : super(key: key);
 
@@ -57,6 +37,26 @@ class ShellScreen extends HookConsumerWidget {
         _context,
         _ref,
         child: child,
+      );
+}
+
+class UserInfo extends HookConsumerWidget {
+  const UserInfo({
+    Key? key,
+    required this.authInfo,
+  }) : super(key: key);
+
+  final AuthInfo authInfo;
+
+  @override
+  Widget build(
+    BuildContext _context,
+    WidgetRef _ref,
+  ) =>
+      userInfo(
+        _context,
+        _ref,
+        authInfo: authInfo,
       );
 }
 

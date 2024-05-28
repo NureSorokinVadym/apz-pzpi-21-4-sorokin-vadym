@@ -4,9 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:sport_changer/application/controllers/auth.dart';
 import 'dart:convert';
 
+import 'package:sport_changer/application/server_setting.dart';
 part 'personal.g.dart';
-
-const URL = "http://localhost/";
 
 @riverpod
 class ClientController extends _$ClientController {
@@ -26,9 +25,10 @@ class ClientController extends _$ClientController {
 
   Future<List<Client>> downloadClient() async {
     String token = ref.read(getTokenProvider);
+    final urlSetting = ref.read(serverSettingProvider);
 
     final response = await _client
-        .get(Uri.parse('${URL}api/personal/get_clients'), headers: {
+        .get(Uri.parse('${urlSetting.url}api/personal/get_clients'), headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
       'Authorization': 'Bearer $token'
@@ -50,12 +50,14 @@ class ClientController extends _$ClientController {
 
     final token = ref.read(getTokenProvider);
 
-    final response = await _client
-        .get(Uri.parse("${URL}api/personal/get_exercises/$id"), headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $token'
-    });
+    final urlSetting = ref.read(serverSettingProvider);
+    final response = await _client.get(
+        Uri.parse("${urlSetting.url}api/personal/get_exercises/$id"),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token'
+        });
 
     if (response.statusCode == 200) {
       final List<UserExercise> exercises =
@@ -76,14 +78,15 @@ class ClientController extends _$ClientController {
   addExercise(int user_id, int exercise_id) async {
     final token = ref.read(getTokenProvider);
 
-    final response =
-        await _client.post(Uri.parse("${URL}api/personal/add_exercise"),
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-              'Authorization': 'Bearer $token'
-            },
-            body: jsonEncode({"user_id": user_id, "exercise_id": exercise_id}));
+    final urlSetting = ref.read(serverSettingProvider);
+    final response = await _client.post(
+        Uri.parse("${urlSetting.url}api/personal/add_exercise"),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode({"user_id": user_id, "exercise_id": exercise_id}));
 
     if (response.statusCode == 200) {
       getClientExercises(user_id);
@@ -111,12 +114,14 @@ class GetExercises extends _$GetExercises {
   Future<List<Exercise>> getExercises() async {
     final token = ref.read(getTokenProvider);
 
-    final response = await _client
-        .get(Uri.parse("${URL}api/personal/get_exercises_list"), headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $token'
-    });
+    final urlSetting = ref.read(serverSettingProvider);
+    final response = await _client.get(
+        Uri.parse("${urlSetting.url}api/personal/get_exercises_list"),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token'
+        });
 
     if (response.statusCode == 200) {
       final List<Exercise> exercises =
@@ -135,12 +140,14 @@ Future<Map<int, String>> getExerciseTypes(GetExerciseTypesRef ref) async {
   final client = http.Client();
   final token = ref.read(getTokenProvider);
 
-  final response = await client
-      .get(Uri.parse("${URL}api/personal/get_exercise_types"), headers: {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    'Authorization': 'Bearer $token'
-  });
+  final urlSetting = ref.read(serverSettingProvider);
+  final response = await client.get(
+      Uri.parse("${urlSetting.url}api/personal/get_exercise_types"),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token'
+      });
 
   if (response.statusCode == 200) {
     final Map<int, String> exerciseTypes =

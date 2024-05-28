@@ -33,3 +33,17 @@ class LogInScreen extends HookConsumerWidget {
         _ref,
       );
 }
+
+class ChangeUrlSetting extends HookConsumerWidget {
+  const ChangeUrlSetting({Key? key}) : super(key: key);
+
+  @override
+  Widget build(
+    BuildContext _context,
+    WidgetRef _ref,
+  ) =>
+      changeUrlSetting(
+        _context,
+        _ref,
+      );
+}

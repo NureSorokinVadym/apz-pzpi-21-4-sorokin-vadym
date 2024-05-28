@@ -6,7 +6,7 @@ part of 'personal.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$getExerciseTypesHash() => r'eb3e7b332337d21a5369dc645804cb2265d6de4a';
+String _$getExerciseTypesHash() => r'428adb2763b248f535bcac9fb7bee28fedb415e7';
 
 /// See also [getExerciseTypes].
 @ProviderFor(getExerciseTypes)
@@ -172,7 +172,7 @@ class _GetExerciseTypeNameProviderElement
   int get id => (origin as GetExerciseTypeNameProvider).id;
 }
 
-String _$clientControllerHash() => r'96bdbd12ad88333c8e9052c7e112e6635a58f766';
+String _$clientControllerHash() => r'bab257a7d2a0826ee114517c249cf946fe919595';
 
 /// See also [ClientController].
 @ProviderFor(ClientController)
@@ -188,7 +188,7 @@ final clientControllerProvider =
 );
 
 typedef _$ClientController = AutoDisposeAsyncNotifier<List<Client>>;
-String _$getExercisesHash() => r'c9fcb174ca9a9d83b50d690b42ee03445fe4810a';
+String _$getExercisesHash() => r'2dbf0adecb78614697b72ddcf9d21b739793c5f5';
 
 /// See also [GetExercises].
 @ProviderFor(GetExercises)

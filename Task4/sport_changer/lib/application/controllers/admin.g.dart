@@ -6,7 +6,7 @@ part of 'admin.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$getSpecificationsHash() => r'3826e356281d8ea07e038996ef496e4f23405487';
+String _$getSpecificationsHash() => r'd0a86f51bd38e7a789b50e3c7d925af17d5572b6';
 
 /// See also [getSpecifications].
 @ProviderFor(getSpecifications)
@@ -22,7 +22,7 @@ final getSpecificationsProvider =
 );
 
 typedef GetSpecificationsRef = AutoDisposeFutureProviderRef<Map<int, String>>;
-String _$createPersonalHash() => r'5890612269c363012e94dc797829e7d97eedaa06';
+String _$createPersonalHash() => r'de13cc16951b31241abc7e7b60e5a144e00e9172';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -171,7 +171,7 @@ class _CreatePersonalProviderElement
   Personal get personal => (origin as CreatePersonalProvider).personal;
 }
 
-String _$createExerciseHash() => r'09bb5654834de4079fb88d478f25853f04a9590f';
+String _$createExerciseHash() => r'caaf9201f4c9697e3f14fc14ee39ab16d374a7d3';
 
 /// See also [createExercise].
 @ProviderFor(createExercise)
@@ -316,7 +316,7 @@ class _CreateExerciseProviderElement
   String? get type => (origin as CreateExerciseProvider).type;
 }
 
-String _$deleteExerciseHash() => r'd5e7160b4f9b4471af9d58b25e94df00ed943d45';
+String _$deleteExerciseHash() => r'8a3c1b0099d8f06dc04c6197edabc672fd5d0501';
 
 /// See also [deleteExercise].
 @ProviderFor(deleteExercise)

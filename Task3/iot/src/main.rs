@@ -1,13 +1,8 @@
+use iot::make_id;
 use rand::{thread_rng, Rng};
 use serde::Deserialize;
 use std::{thread::sleep, time::Duration};
 use ureq;
-
-macro_rules! create_jwt {
-    () => {
-        "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMSJ9.8tmzC05mGvYhPasy5gaKKdC0pg61vABLWW8yQkPaMHo"
-    };
-}
 
 #[derive(Deserialize)]
 struct AIResponse {
@@ -38,19 +33,20 @@ impl Sensors {
     }
 }
 
-const TOKEN: &str = create_jwt!();
+make_id!();
+
+fn registration() {}
 
 fn main_process() -> Result<(), ureq::Error> {
     let mut sensors = Sensors::new();
+    println!("Id: {}", id());
 
     let resp: CreateResponse = ureq::get("http://localhost/ai/exercises")
-        .set("Authorization", &create_jwt!())
         .call()?
         .into_json()?;
 
     loop {
         let response: AIResponse = ureq::put(&format!("http://localhost/ai/exercises/{}", resp.id))
-            .set("Authorization", &format!("Bearer {}", TOKEN))
             .send_json(ureq::json!({
                 "user_state": {
                     "pulse": sensors.pulse,
