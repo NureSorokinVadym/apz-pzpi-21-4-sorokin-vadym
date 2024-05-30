@@ -11,6 +11,7 @@ import com.nicourrrn.sportchanger.domain.ExerciseRepository
 import com.nicourrrn.sportchanger.domain.ExerciseType
 import com.nicourrrn.sportchanger.domain.ExerciseUser
 import com.nicourrrn.sportchanger.domain.User
+import com.nicourrrn.sportchanger.domain.UserIotPair
 import com.nicourrrn.sportchanger.domain.UserRepository
 import com.nicourrrn.sportchanger.domain.emptyUser
 import kotlinx.coroutines.launch
@@ -20,6 +21,8 @@ import org.koin.dsl.module
 class AuthenticationViewModel(private val userRepository: UserRepository) : ViewModel() {
     private var _user: MutableState<User> = mutableStateOf(emptyUser())
     val user: State<User> = _user
+    private var _userHaveIot = mutableStateOf(false)
+    val userHaveIot: State<Boolean> = _userHaveIot
     private var _token: MutableState<String?> = mutableStateOf(null)
     val token: State<String?> = _token
     var navController: MutableState<NavController?> = mutableStateOf(null)
@@ -75,6 +78,7 @@ class AuthenticationViewModel(private val userRepository: UserRepository) : View
     fun getUserInfo() {
         viewModelScope.launch {
             _user.value = userRepository.userInfo()
+            _userHaveIot.value = userRepository.haveIot()
         }
     }
 
@@ -92,12 +96,30 @@ class ExerciseViewModel(private val exerciseRepository: ExerciseRepository) : Vi
     private var _exercises: MutableState<List<ExerciseUser>> = mutableStateOf(listOf())
     val exercises: State<List<ExerciseUser>> = _exercises
 
+    private var _nextExerciseId = mutableStateOf(-1)
+    val nextExerciseId: State<Int> = _nextExerciseId
+
     fun init() {
         viewModelScope.launch {
             _exerciseTypes.value = exerciseRepository.getExerciseTypes()
             _exercises.value = exerciseRepository.getUserExercises()
+            _nextExerciseId.value = exerciseRepository.getNextExercise().id
         }
     }
+
+    fun makePair(iotId: Int) {
+        viewModelScope.launch {
+            exerciseRepository.makePair(UserIotPair(iotId = iotId))
+        }
+    }
+
+    fun newNextExercise(exerciseId: Int) {
+        viewModelScope.launch {
+            exerciseRepository.setNextExercise(exerciseId)
+            _nextExerciseId.value = exerciseId
+        }
+    }
+
 
 
 }

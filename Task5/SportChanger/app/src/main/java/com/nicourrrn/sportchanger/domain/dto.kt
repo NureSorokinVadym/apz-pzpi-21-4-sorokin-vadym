@@ -50,3 +50,14 @@ data class ExerciseUser(
     @SerialName("date")
     val createAt: String
 )
+
+@Serializable
+data class UserIotPair(
+    @SerialName("user_id")
+    val userId: Int? = null,
+    @SerialName("iot_id")
+    val iotId: Int
+)
+
+@Serializable
+data class Id(val id: Int)

@@ -145,3 +145,66 @@ pub async fn get_exercises(db: &PgPool, token: &str) -> Result<Vec<ExerciseUser>
         .unwrap();
     Ok(exercises)
 }
+
+pub async fn register_iot(mut db: &PgPool, iot: &UserIotPair) -> Result<(), String> {
+    let iot_present = user_repo::iot_is_present(&mut db, iot.iot_id).await;
+    if let Err(e) = iot_present {
+        println!("Error: {:?}", e);
+        return Err("Iot is already present".to_string());
+    }
+    if let Err(e) = user_repo::register_iot(&mut db, &iot).await {
+        println!("Error: {:?}", e);
+        return Err("Error registering iot".to_string());
+    }
+    Ok(())
+}
+
+pub async fn give_iot(mut db: &PgPool, token: &str, iot: &UserIotPair) -> Result<(), String> {
+    let user_id = auth::validate_token(token)?;
+    let iot_user_id = iot.user_id.unwrap_or(user_id);
+    let ios_is_free = user_repo::iot_is_free(&mut db, iot.iot_id).await.unwrap();
+    if !ios_is_free {
+        return Err("Iot is not free or not present".to_string());
+    }
+
+    user_repo::give_iot(
+        &mut db,
+        &UserIotPair {
+            user_id: Some(iot_user_id),
+            iot_id: iot.iot_id,
+            next_exercise_id: None,
+        },
+    )
+    .await
+    .unwrap();
+    Ok(())
+}
+
+pub async fn have_iot(mut db: &PgPool, token: &str) -> Result<bool, String> {
+    let user_id = auth::validate_token(token)?;
+    let iot_present = user_repo::user_have_iot(&mut db, user_id).await;
+    match iot_present {
+        Ok(present) => Ok(present),
+        Err(e) => Err(e.to_string()),
+    }
+}
+
+pub async fn set_exercise_task(
+    mut db: &PgPool,
+    token: &str,
+    exercise_task_id: &Id,
+) -> Result<(), String> {
+    let user_id = auth::validate_token(token)?;
+    personal_repo::set_exercise_task(&mut db, user_id, exercise_task_id.id)
+        .await
+        .unwrap();
+    Ok(())
+}
+
+pub async fn get_exercise_task(db: &PgPool, token: &str) -> Result<Id, String> {
+    let user_id = auth::validate_token(token)?;
+    let exercise = user_repo::get_exercise_task(db, user_id)
+        .await
+        .unwrap_or(Id { id: -1 });
+    Ok(exercise)
+}

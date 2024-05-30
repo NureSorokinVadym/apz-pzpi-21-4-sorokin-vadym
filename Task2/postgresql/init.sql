@@ -87,6 +87,15 @@ CREATE TABLE exercice_user (
   CONSTRAINT fk_exerciseuser_user FOREIGN KEY (user_id) REFERENCES user_base(id)
 );
 
+CREATE TABLE iot_user (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER DEFAULT NULL,
+    next_exercise_id INTEGER DEFAULT NULL,
+    create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_iot_user FOREIGN KEY (user_id) REFERENCES user_base(id),
+    CONSTRAINT fk_iot_exercise FOREIGN KEY (next_exercise_id) REFERENCES exercice_user(id)
+);
+
 INSERT INTO user_base(name, surname, email, password_hash) VALUES ('admin', 'admin', 'sss', '$2b$10$7614Rt0Wieb/hPEPyMpJheTDYaSYVQ/R6cgch2wqKePaJp/T/BlE.');
 INSERT INTO admin(user_id, access_level) VALUES (1, 10);
 

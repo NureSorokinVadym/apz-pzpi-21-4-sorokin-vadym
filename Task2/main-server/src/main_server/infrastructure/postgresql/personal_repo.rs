@@ -165,3 +165,16 @@ pub async fn get_exercise_types(db: &PgPool) -> Result<HashMap<i32, String>, sql
         .await?;
     Ok(types.into_iter().collect())
 }
+
+pub async fn set_exercise_task(
+    db: &PgPool,
+    user_id: i32,
+    exercise_user_id: i32,
+) -> Result<(), sqlx::Error> {
+    sqlx::query("update iot_user set next_exercise_id = $1 where user_id = $2")
+        .bind(exercise_user_id)
+        .bind(user_id)
+        .execute(db)
+        .await?;
+    Ok(())
+}

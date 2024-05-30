@@ -1,4 +1,4 @@
-from fastapi import HTTPException
+from fastapi import HTTPException, Request
 from fastapi.routing import APIRouter
 
 from . import application, dto
@@ -24,3 +24,14 @@ async def update_exercise(
         return await application.create_predict(exercise_id)
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
+
+
+@router.get("/start_exercise")
+async def start_exercise(request: Request):
+    try:
+        id = await application.start_exercise(
+            request.headers["Authorization"].split(" ")[1]
+        )
+        return dto.Id(id=id)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))

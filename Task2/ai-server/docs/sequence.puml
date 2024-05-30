@@ -1,0 +1,10 @@
+@startuml
+    Iot --> AIServer: /start_exercise. ApiKey
+    Iot --> AIServer: /predict. ApiKey, IotDate (pulse, temperature, ...)
+    AIServer --> Iot: /predict. Result scope of continue
+    
+    Iot --> AIServer: /end_exercise. ApiKey
+    AIServer --> Iot: /end_exercise. Final Time (in seconds)
+
+@enduml
+

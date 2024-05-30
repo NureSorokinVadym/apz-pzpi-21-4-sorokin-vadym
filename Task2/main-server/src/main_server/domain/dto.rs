@@ -50,6 +50,14 @@ pub struct UserExercisePair {
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(crate = "rocket::serde")]
+pub struct UserIotPair {
+    pub user_id: Option<i32>,
+    pub iot_id: i32,
+    pub next_exercise_id: Option<i32>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(crate = "rocket::serde")]
 pub struct ExerciseUser {
     pub id: Option<i32>,
     pub exercise: Exercise,

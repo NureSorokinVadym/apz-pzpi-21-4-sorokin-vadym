@@ -7,7 +7,9 @@ import com.nicourrrn.sportchanger.domain.Exercise
 import com.nicourrrn.sportchanger.domain.ExerciseRepository
 import com.nicourrrn.sportchanger.domain.ExerciseType
 import com.nicourrrn.sportchanger.domain.ExerciseUser
+import com.nicourrrn.sportchanger.domain.Id
 import com.nicourrrn.sportchanger.domain.User
+import com.nicourrrn.sportchanger.domain.UserIotPair
 import com.nicourrrn.sportchanger.domain.UserRepository
 import com.nicourrrn.sportchanger.domain.emptyUser
 import com.nicourrrn.sportchanger.domain.prefStoreKey
@@ -38,6 +40,21 @@ class UserRepositoryHttp(private val context: Context) : UserRepository {
     }
 
     private val sharedPref = context.getSharedPreferences(prefStoreKey, Context.MODE_PRIVATE)
+
+    override suspend fun haveIot(): Boolean {
+        return try {
+            val token = getToken() ?: ""
+            client.get("$url/api/user/have_iot") {
+                headers {
+                    append(HttpHeaders.Authorization, "Bearer $token")
+                }
+
+            }.body()
+        } catch (e: Throwable) {
+            println(e)
+            false
+        }
+    }
 
     override fun getToken(): String? {
        return sharedPref.getString("token", null)
@@ -136,7 +153,50 @@ class ExerciseRepositoryHttp(private val userRepository: UserRepository) : Exerc
             println(e)
             return listOf()
         }
+    }
 
+    override suspend fun makePair(pair: UserIotPair) {
+        val token = userRepository.getToken()
+        try {
+            client.post("$url/api/user/give_iot") {
+                headers {
+                    append(HttpHeaders.Authorization, "Bearer $token")
+                }
+                contentType(ContentType.Application.Json)
+                setBody(pair)
+            }
+        } catch (e: Throwable) {
+            println(e)
+        }
+    }
+
+    override suspend fun setNextExercise(exerciseUserId: Int) {
+        val token = userRepository.getToken()
+        try {
+            client.post("$url/api/user/set_exercise_task") {
+                headers {
+                    append(HttpHeaders.Authorization, "Bearer $token")
+                }
+                contentType(ContentType.Application.Json)
+                setBody(Id(id = exerciseUserId))
+            }
+        } catch (e: Throwable) {
+            println("Error: $e")
+        }
+    }
+
+    override suspend fun getNextExercise(): Id {
+        val token = userRepository.getToken()
+        return try {
+            client.get("$url/api/user/get_exercise_task") {
+                headers {
+                    append(HttpHeaders.Authorization, "Bearer $token")
+                }
+            }.body()
+        } catch (e: Throwable) {
+            println("Error: $e")
+            Id(id = -1)
+        }
     }
 
 }

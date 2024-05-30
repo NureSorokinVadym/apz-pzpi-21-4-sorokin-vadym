@@ -1,5 +1,7 @@
 from psycopg import AsyncConnection
 
+from . import dto
+
 
 class ConnManager:
     def __init__(self):
@@ -29,3 +31,19 @@ async def get_last_exercise() -> tuple[int]:
             "SELECT id FROM exercice_user WHERE user_id = 1 ORDER BY id DESC LIMIT 1"
         )
         return await cursor.fetchone()
+
+
+async def get_iot_exercise(iot_id: int) -> tuple[int, int]:
+    async with conn_manager.conn.cursor() as cursor:
+        await cursor.execute(
+            "SELECT id, user_id FROM exercice_user WHERE iot_id = %d", (iot_id,)
+        )
+        return await cursor.fetchone()
+
+
+async def get_user_exercise(exercise_user_id: int) -> dto:
+    async with conn_manager.conn.cursor() as cursor:
+        await cursor.execute(
+            "SELECT * FROM exercice_user WHERE id = %d", (exercise_user_id,)
+        )
+        return UserExercise(**(await cursor.fetchone()))

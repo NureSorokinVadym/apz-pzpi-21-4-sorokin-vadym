@@ -1,0 +1,19 @@
+@startuml
+
+
+state "Start exercise" as start
+start: /start_exercise(ApiKey)
+state "Saving him to cache" as save
+state "Waiting for /predict with date" as wait
+wait: /predict(ApiKey, IotDate)
+state "Ending exercise" as end
+end: /end_exercise(ApiKey)
+
+[*] --> start
+start --> save
+save --> wait
+wait --> save
+wait --> end
+end --> [*]
+
+@enduml

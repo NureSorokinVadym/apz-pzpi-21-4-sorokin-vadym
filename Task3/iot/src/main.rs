@@ -13,6 +13,11 @@ struct AIResponse {
 struct CreateResponse {
     id: i32,
 }
+#[derive(Deserialize)]
+struct UserIotPair {
+    user_id: Option<i32>,
+    iot_id: i32,
+}
 
 struct Sensors {
     pulse: i32,
@@ -35,7 +40,15 @@ impl Sensors {
 
 make_id!();
 
-fn registration() {}
+fn registration() {
+    let id = id();
+    ureq::post("http://localhost/api/user/register_iot")
+        .send_json(ureq::json!({
+            "iot_id": id,
+        }))
+        .unwrap();
+    println!("Registered");
+}
 
 fn main_process() -> Result<(), ureq::Error> {
     let mut sensors = Sensors::new();
@@ -62,6 +75,7 @@ fn main_process() -> Result<(), ureq::Error> {
 }
 
 fn main() {
+    registration();
     loop {
         match main_process() {
             Ok(_) => break,

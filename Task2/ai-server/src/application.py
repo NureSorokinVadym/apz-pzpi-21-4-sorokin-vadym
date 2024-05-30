@@ -1,5 +1,7 @@
 from datetime import datetime
 
+import pyjwt
+
 from . import dto, infostructure
 from .domain import UserExercise, user_exercises
 
@@ -27,3 +29,13 @@ async def create_predict(exercise_id: int) -> dto.AIResponse:
     duration = (datetime.now() - user_exercises[exercise_id].start_at).seconds
     predict = (10 - duration // 2) % 11
     return dto.AIResponse(will_continue=predict)
+
+
+async def start_exercise(jwt_token: str):
+    try:
+        exercise_user_id, user_id = infostructure.get_iot_exercise(iot_id.id)
+        exercise_user: UserExercise = infostructure.get_user_exercise(exercise_user_id)
+        exercise_user.start_at = datetime.now()
+        user_exercises[user_id] = exercise_user
+    except:
+        raise ValueError("Exercise not exists")

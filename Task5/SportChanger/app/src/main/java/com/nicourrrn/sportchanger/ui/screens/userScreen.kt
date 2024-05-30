@@ -1,6 +1,7 @@
 package com.nicourrrn.sportchanger.ui.screens
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -48,7 +49,7 @@ fun UserScreen(userViewModel: AuthenticationViewModel = koinViewModel(), exercis
                     icon = { Icon(Icons.Filled.Settings, "Settings") })
             }
         },
-        floatingActionButton = { FloatingActionButton(onClick = { exerciseViewModel.init() }) {
+        floatingActionButton = { FloatingActionButton(onClick = { if(screen.value == ScreenType.Exercises) exerciseViewModel.init() else userViewModel.getUserInfo() }) {
             Icon(Icons.Outlined.Refresh, "Update")
         } }
 
@@ -74,18 +75,33 @@ fun ExerciseScreen(modifier: Modifier, exerciseViewModel: ExerciseViewModel, use
                 it.exercise.name +
                         " [${it.exercise.measurement}]" +
                         " of ${exerciseViewModel.exerciseType.value[it.exercise.exerciseTypeId]} type")
-            }, supportingContent = { Text("$duration") })
+            }, supportingContent = { Text("$duration") }, trailingContent = { if (exerciseViewModel.nextExerciseId.value == it.id) Text("Changed") else TextButton(
+                onClick = { exerciseViewModel.newNextExercise(it.id ?: 0) }) {
+                 Text("Change")
+            } })
         }
     }
 }
 
 @Composable
 fun SettingScreen(modifier: Modifier, userViewModel: AuthenticationViewModel, exerciseViewModel: ExerciseViewModel) {
+    
+    val iotId = remember {
+        mutableStateOf("")
+    }
     Column(modifier) {
         Text("Name: ${userViewModel.user.value.name}")
         Text("Token: ${userViewModel.token.value}")
+        Text("Have IoT: ${userViewModel.userHaveIot.value}")
         TextButton(onClick = { userViewModel.logOut() }) {
             Text("Clear token")
+        }
+
+        Row { 
+            OutlinedTextField(value = iotId.value, onValueChange = { iotId.value = it })
+            OutlinedButton(onClick = { exerciseViewModel.makePair(iotId.value.toInt()) }) {
+                Text("Pair")
+            }
         }
     }
 }
