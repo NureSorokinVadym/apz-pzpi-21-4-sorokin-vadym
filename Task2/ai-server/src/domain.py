@@ -3,17 +3,25 @@ from datetime import datetime
 from pydantic import BaseModel, Field
 
 
-class UserState(BaseModel):
-    pulse: int
-    temperature: float
+class IotData(BaseModel):
+    pulse: int = Field(..., title="Pulse rate", ge=0, le=200)
+    temperature: float = Field(..., title="Temperature", ge=25, le=50)
 
 
 class UserExercise(BaseModel):
-    states: list[UserState] = Field(default_factory=list)
-    count: int | None = None
-    weight: int | None = None
-    start_at: datetime = Field(default_factory=datetime.now)
+    id: int
+    user_id: int
+    start_time: datetime = Field(..., title="Start time", default_factory=datetime.now)
 
 
-# user_exercise_id -> UserExercise
-user_exercises: dict[int, UserExercise] = {}
+class ExerciseDuration(BaseModel):
+    duration: int
+
+
+class DefaultResponse(BaseModel):
+    id: int | None = None
+    message: str
+
+
+# user_id -> UserExercise
+exercises: dict[int, UserExercise] = {}

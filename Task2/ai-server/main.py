@@ -2,14 +2,13 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from src import conn_manager, router
+from src import database, router
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    await conn_manager.create()
+    await database.connect()
     yield
-    await conn_manager.close()
 
 
 app = FastAPI(lifespan=lifespan)
