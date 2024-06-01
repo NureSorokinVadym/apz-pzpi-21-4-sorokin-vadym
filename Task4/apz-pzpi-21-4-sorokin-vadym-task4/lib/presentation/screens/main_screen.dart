@@ -5,6 +5,7 @@ import "package:go_router/go_router.dart";
 import 'package:functional_widget_annotation/functional_widget_annotation.dart';
 import 'package:gap/gap.dart';
 import 'package:sport_changer/presentation/router/routes.dart';
+import 'package:sport_changer/application/controllers/exporter.dart';
 
 import 'package:sport_changer/application/controllers/auth.dart';
 import 'package:sport_changer/domain/auth.dart';
@@ -133,6 +134,18 @@ Widget settingScreen(BuildContext context, WidgetRef ref) {
             ),
             const LangChanger()
           ]),
+          TextButton(
+              onPressed: () {
+                authInfo.when(
+                    data: (value) {
+                      if (value != null) {
+                        exportData(value.toJson().toString());
+                      }
+                    },
+                    loading: () {},
+                    error: (error, stack) {});
+              },
+              child: Text(lang["export"] ?? "Export")),
         ],
       ),
     ),

@@ -186,6 +186,7 @@ const languages = {
     "exercise": "Exercise",
     "admin_screen": "Admin screen",
     "admin_exercise_screen": "Admin exercise screen",
+    "export": "Export",
   },
   "ua": {
     "email": "Електронна пошта",
@@ -214,5 +215,6 @@ const languages = {
     "exercise": "Вправа",
     "admin_screen": "Екран адміністратора",
     "admin_exercise_screen": "Екран адміністратора вправ",
+    "export": "Експорт",
   },
 };
