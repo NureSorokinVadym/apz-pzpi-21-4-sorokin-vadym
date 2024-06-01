@@ -158,7 +158,7 @@ pub mod presentation {
     pub async fn registration() -> Settings {
         let result = app::registration().await;
         println!(
-            "{}, \nWaiting for pairing with {}, press Enter for continue",
+            "{}\nWaiting for pairing with {}, press Enter for continue",
             result.message, ID
         );
         let _ = std::io::stdin().read_line(&mut String::new());

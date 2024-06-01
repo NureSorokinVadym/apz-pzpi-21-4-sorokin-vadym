@@ -40,9 +40,15 @@ pub mod endpoints {
             .unwrap();
         Json::from(DefaultResponse::new("Success".to_string()))
     }
+    #[get("/make_backup")]
+    pub async fn make_backup(db: &State<PgPool>, api_key: ApiKey<'_>) -> Json<Vec<User>> {
+        println!("Making backup");
+        let users = use_cases::make_backup(db, api_key.into()).await.unwrap();
+        Json::from(users)
+    }
 }
 
 use endpoints::*;
 pub fn get_routes() -> Vec<rocket::Route> {
-    routes![create_admin, create_personal, delete_exercise]
+    routes![create_admin, create_personal, delete_exercise, make_backup]
 }

@@ -45,6 +45,11 @@ async def predict(req: Request, data: dto.IotData) -> dto.DefaultResponse:
         raise HTTPException(status_code=401, detail=f"Invalid token, {e}")
 
 
+@router.post("/make_light_prediction")
+async def make_light_prediction(data: dto.IotData) -> float:
+    return await application.make_light_prediction(data)
+
+
 @router.patch("/end_exercise")
 async def end_exercise(req: Request, iot_id: dto.IotId) -> dto.DefaultResponse:
     try:

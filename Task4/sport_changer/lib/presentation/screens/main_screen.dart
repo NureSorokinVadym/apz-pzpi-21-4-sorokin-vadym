@@ -16,10 +16,11 @@ part 'main_screen.g.dart';
 @hcwidget
 Widget mainScreen(BuildContext context, WidgetRef ref) {
   final authInfo = ref.watch(authInfoControlerProvider);
+  final lang = languages[ref.watch(languageSettingProvider)] ?? {};
 
   return Scaffold(
       appBar: AppBar(
-        title: const Text("Main Screen"),
+        title: Text(lang["main_screen"] ?? "Main Screen"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -53,9 +54,9 @@ Widget shellScreen(BuildContext context, WidgetRef ref,
     body: child,
     bottomNavigationBar: BottomNavigationBar(
       items: [
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.fitness_center),
-          label: "Pannel",
+        BottomNavigationBarItem(
+          icon: const Icon(Icons.fitness_center),
+          label: lang["panel"] ?? "Panel",
         ),
         BottomNavigationBarItem(
           icon: const Icon(Icons.settings),

@@ -91,12 +91,10 @@ fun SettingScreen(modifier: Modifier, userViewModel: AuthenticationViewModel, ex
     }
     Column(modifier) {
         Text("Name: ${userViewModel.user.value.name}")
-        Text("Token: ${userViewModel.token.value}")
-        Text("Have IoT: ${userViewModel.userHaveIot.value}")
+        Text("Have IoT: ${if (userViewModel.userHaveIot.value) "have" else "have not"}")
         TextButton(onClick = { userViewModel.logOut() }) {
-            Text("Clear token")
+            Text("Log Out")
         }
-
         Row { 
             OutlinedTextField(value = iotId.value, onValueChange = { iotId.value = it })
             OutlinedButton(onClick = { exerciseViewModel.makePair(iotId.value.toInt()) }) {

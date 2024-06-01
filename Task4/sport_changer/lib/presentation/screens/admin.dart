@@ -9,14 +9,16 @@ import 'package:sport_changer/presentation/router/routes.dart';
 import 'package:sport_changer/domain/admin.dart';
 import 'package:sport_changer/domain/personal.dart';
 import 'package:gap/gap.dart';
-
+import 'package:sport_changer/application/controllers/auth.dart';
 part 'admin.g.dart';
 
 @hcwidget
 Widget adminMainScreen(BuildContext context, WidgetRef ref) {
+  final lang = languages[ref.watch(languageSettingProvider)] ?? {};
+
   return Scaffold(
     appBar: AppBar(
-      title: const Text("Admin Screen"),
+      title: Text(lang["admin_screen"] ?? "Admin Screen"),
     ),
     body: Center(
       child: Row(
@@ -26,14 +28,14 @@ Widget adminMainScreen(BuildContext context, WidgetRef ref) {
             onPressed: () {
               context.push(Routes.adminClients.url);
             },
-            child: const Text("Clients"),
+            child: Text(lang["client"] ?? "Clients"),
           ),
           const Gap(32),
           ElevatedButton(
             onPressed: () {
               context.push(Routes.adminExercises.url);
             },
-            child: const Text("Exercises"),
+            child: Text(lang["exercise"] ?? "Exercises"),
           ),
         ],
       ),
@@ -44,10 +46,11 @@ Widget adminMainScreen(BuildContext context, WidgetRef ref) {
 @hcwidget
 Widget adminClientsScreen(BuildContext context, WidgetRef ref) {
   final clients = ref.watch(clientControllerProvider);
+  final lang = languages[ref.watch(languageSettingProvider)] ?? {};
 
   return Scaffold(
     appBar: AppBar(
-      title: const Text("Admin Clients Screen"),
+      title: Text(lang["admin_exercise_screen"] ?? "Admin Exercise Screen"),
     ),
     floatingActionButton: FloatingActionButton(
       onPressed: () {
@@ -117,10 +120,11 @@ Widget adminClientsScreen(BuildContext context, WidgetRef ref) {
 Widget adminExercisesScreen(BuildContext context, WidgetRef ref) {
   final exercisesWather = ref.watch(getExercisesProvider);
   final exerciseTypes = ref.watch(getExerciseTypesProvider);
+  final lang = languages[ref.watch(languageSettingProvider)] ?? {};
 
   return Scaffold(
     appBar: AppBar(
-      title: const Text("Admin Exercises Screen"),
+      title: Text(lang["admin_exercise_screen"] ?? "Admin Exercise Screen"),
     ),
     floatingActionButton: FloatingActionButton(
       onPressed: () {

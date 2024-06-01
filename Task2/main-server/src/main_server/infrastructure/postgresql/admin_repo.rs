@@ -46,3 +46,20 @@ pub async fn delete_exercise(db: &PgPool, id: &Id) -> Result<(), sqlx::Error> {
         .await?;
     Ok(())
 }
+
+pub async fn make_backup(db: &PgPool) -> Result<Vec<User>, sqlx::Error> {
+    let rows: Vec<(i32, Option<String>, Option<String>, String)> =
+        sqlx::query_as("select id, name, surname, email from user_base")
+            .fetch_all(db)
+            .await?;
+    Ok(rows
+        .into_iter()
+        .map(|row| User {
+            id: Some(row.0),
+            name: row.1,
+            surname: row.2,
+            email: row.3,
+            password: None,
+        })
+        .collect())
+}

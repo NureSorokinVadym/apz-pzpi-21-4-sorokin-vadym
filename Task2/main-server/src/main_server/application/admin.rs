@@ -51,3 +51,16 @@ pub async fn delete_exercise(db: &PgPool, token: &str, exercise: &Id) -> Result<
         Err(e) => Err(e.to_string()),
     }
 }
+
+pub async fn make_backup(db: &PgPool, token: &str) -> Result<Vec<User>, String> {
+    let user_id = auth::validate_token(token)?;
+    let user_access_level = admin_repo::get_admin_access_level(db, user_id).await;
+    if user_access_level.unwrap_or(0) < 10 {
+        return Err("User access level is not enough".to_string());
+    }
+    let result = admin_repo::make_backup(db).await;
+    match result {
+        Ok(users) => Ok(users),
+        Err(e) => Err(e.to_string()),
+    }
+}

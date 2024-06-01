@@ -41,9 +41,13 @@ async def end_exercise(user_id: int, iot_id: int) -> DefaultResponse:
     return DefaultResponse(message=f"Duration: {duration}")
 
 
+async def make_light_prediction(iot_data: IotData) -> float:
+    return predictor.predict(iot_data.temperature, iot_data.pulse, 3)
+
+
 class Predictor:
     def __init__(self):
-        temperatures = np.array([20, 22, 25, 28, 30])
+        temperatures = np.array([36, 36, 36, 37, 35])
         pulses = np.array([70, 75, 80, 90, 95])
         durations = np.array([30, 45, 60, 75, 90])
         scope = np.array([0.8, 0.7, 0.6, 0.4, 0.2])

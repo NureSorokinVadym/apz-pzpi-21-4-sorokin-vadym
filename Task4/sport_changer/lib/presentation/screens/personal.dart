@@ -5,16 +5,21 @@ import 'package:functional_widget_annotation/functional_widget_annotation.dart';
 import 'package:sport_changer/application/controllers/personal.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:sport_changer/presentation/router/routes.dart';
+import 'package:sport_changer/application/controllers/auth.dart';
+import 'package:sport_changer/domain/auth.dart';
+import './personal.dart';
+import './admin.dart';
 
 part 'personal.g.dart';
 
 @hcwidget
 Widget clientViewScreen(BuildContext context, WidgetRef ref) {
   final clients = ref.watch(clientControllerProvider);
+  final lang = languages[ref.watch(languageSettingProvider)] ?? {};
 
   return Scaffold(
       appBar: AppBar(
-        title: const Text("Personal Screen"),
+        title: Text(lang["personal_screen"] ?? "Personal Screen"),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -30,7 +35,8 @@ Widget clientViewScreen(BuildContext context, WidgetRef ref) {
                   final client = clients[index];
                   return ListTile(
                     title: Text(client.name ?? "No name"),
-                    subtitle: Text(client.surname ?? "No surname"),
+                    subtitle: Text(
+                        client.surname ?? lang["no_surname"] ?? "No surname"),
                     onTap: () {
                       context.push(Routes.client.url
                           .replaceFirst(":id", client.id.toString()));
@@ -48,10 +54,11 @@ Widget clientScreen(BuildContext context, WidgetRef ref, {required int id}) {
       .whenData((value) => value.firstWhere((element) => element.id == id))));
 
   ref.read(clientControllerProvider.notifier).getClientExercises(id);
+  final lang = languages[ref.watch(languageSettingProvider)] ?? {};
 
   return Scaffold(
     appBar: AppBar(
-      title: const Text("Client Screen"),
+      title: Text(lang["client_screen"] ?? "Client Screen"),
     ),
     floatingActionButton: FloatingActionButton(
       onPressed: () {
@@ -62,17 +69,17 @@ Widget clientScreen(BuildContext context, WidgetRef ref, {required int id}) {
     body: Center(
         child: client.when(
       data: (client) {
-        final name = client.name ?? "No name";
-        final surname = client.surname ?? "No surname";
+        final name = client.name ?? lang["no_name"] ?? "No name";
+        final surname = client.surname ?? lang["no_surname"] ?? "No surname";
         return ListView(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           children: [
-            Text("Name: $name"),
-            Text("Surname: $surname"),
+            Text("${lang["name"] ?? "Name"}: $name"),
+            Text("${lang["surname"] ?? "Surname"}: $surname"),
             ...client.exercises.where((e) => e.exercise != null).map((e) {
               final duration = e.duration == const Duration()
-                  ? "Not started"
-                  : "Duration: ${e.duration}";
+                  ? lang["not_started"] ?? "Not started"
+                  : "${lang["duration"] ?? "Duration"}: ${e.duration}";
               final exerciseTypesName = ref.watch(
                   getExerciseTypeNameProvider(id: e.exercise!.exerciseTypeId!));
               final title = "${e.exercise!.name} [$exerciseTypesName]";
@@ -80,7 +87,7 @@ Widget clientScreen(BuildContext context, WidgetRef ref, {required int id}) {
                 title: ListTile(
                     title: Text(title),
                     subtitle: Text(
-                        "$duration, Measurement: ${e.exercise!.measurement}")),
+                        "$duration, ${lang["measurement"] ?? "Measurement"}: ${e.exercise!.measurement}")),
               );
             })
           ],
@@ -96,10 +103,11 @@ Widget clientScreen(BuildContext context, WidgetRef ref, {required int id}) {
 Widget newExerciseScreen(BuildContext context, WidgetRef ref,
     {required int id}) {
   final exercises = ref.watch(getExercisesProvider);
+  final lang = languages[ref.watch(languageSettingProvider)] ?? {};
 
   return Scaffold(
       appBar: AppBar(
-        title: const Text("Choose Exercise"),
+        title: Text(lang["choose_exercise"] ?? "Choose Exercise"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
