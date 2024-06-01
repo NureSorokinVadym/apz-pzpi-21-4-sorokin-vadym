@@ -1,17 +1,26 @@
 from datetime import datetime
 
+import jwt
 import numpy as np
 
 from . import infostructure as db
-from .domain import (DefaultResponse, ExerciseDuration, IotData, UserExercise,
-                     exercises)
+from .domain import (DefaultResponse, ExerciseDuration, IotData, Settings,
+                     UserExercise, exercises)
+
+
+async def get_settings(iot_id: int) -> Settings:
+    user_id = await db.get_user_id(iot_id)
+    print(f"user_id: {user_id}")
+    return Settings(
+        token=jwt.encode({"user_id": user_id}, "secret_key", algorithm="HS256")
+    )
 
 
 async def start_exercise(user_id: int) -> DefaultResponse:
     if user_id in exercises:
         return DefaultResponse(message="Exercise already started")
 
-    exercises[user_id] = UserExercise(id=user_id)
+    exercises[user_id] = UserExercise(id=user_id, user_id=user_id)
     return DefaultResponse(message="Exercise started")
 
 
@@ -24,10 +33,12 @@ async def predict(user_id: int, iot_data: IotData) -> DefaultResponse:
     return DefaultResponse(message=f"Scope: {prediction}")
 
 
-async def end_exercise(user_id: int) -> ExerciseDuration:
+async def end_exercise(user_id: int, iot_id: int) -> DefaultResponse:
     exercise = exercises.pop(user_id)
     duration = (datetime.now() - exercise.start_time).seconds
-    return ExerciseDuration(duration=duration)
+    exercise_id = await db.get_exercise(iot_id)
+    await db.save_duration(exercise_id, duration)
+    return DefaultResponse(message=f"Duration: {duration}")
 
 
 class Predictor:
@@ -51,7 +62,6 @@ class Predictor:
             self.weights[0] * features[0]
             + self.weights[1] * features[1]
             + self.weights[2] * features[2]
-            + self.weights[3] * features[3]
         )
         return prediction
 

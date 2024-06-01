@@ -12,9 +12,11 @@ part 'router.g.dart';
 
 @riverpod
 GoRouter router(RouterRef ref) {
+  // Ключі для навігаторів
   final routerKey = GlobalKey<NavigatorState>(debugLabel: 'routerState');
   final shellKey = GlobalKey<NavigatorState>(debugLabel: 'shellState');
   final isAuth = ValueNotifier(const AsyncValue.data(false));
+  // Прослуховування зміни токена
   ref
     ..listen(getTokenProvider, (state, nextValue) {
       isAuth.value = AsyncValue.data(nextValue != '');
@@ -25,6 +27,7 @@ GoRouter router(RouterRef ref) {
     navigatorKey: routerKey,
     initialLocation: Routes.login.url,
     refreshListenable: isAuth,
+    // Налаштування переадресації у разі авторизації
     redirect: (context, state) {
       final authValue = isAuth.value.requireValue;
       final isLogin = state.fullPath?.startsWith("/auth") ?? false;
@@ -53,6 +56,7 @@ GoRouter router(RouterRef ref) {
           return ClientScreen(id: int.parse(id));
         },
       ),
+      // Створення екрану з вкладками
       ShellRoute(
           navigatorKey: shellKey,
           routes: [
@@ -92,7 +96,7 @@ GoRouter router(RouterRef ref) {
       )
     ],
   );
-
+  // Очищення підписок
   ref.onDispose(router.dispose);
 
   return router;

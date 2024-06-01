@@ -1,0 +1,12 @@
+@startuml
+
+package main.rs
+package ureq
+package serde
+package rustc
+
+main.rs <-- ureq: use
+main.rs <-- serde: use
+main.rs <-- rustc: build
+
+@enduml

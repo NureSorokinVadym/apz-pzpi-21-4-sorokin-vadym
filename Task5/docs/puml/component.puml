@@ -1,0 +1,54 @@
+@startuml
+
+left to right direction
+ 
+component MainActivity.kt
+
+package Application
+package Domain
+package Ui
+
+MainActivity.kt <-- Ui
+
+Ui <-- Application
+Ui <-- Domain
+Application <-- Domain
+
+component screens
+component authorizationScreens.kt
+component userScreen.kt
+
+screens <-- authorizationScreens.kt
+screens <-- userScreen.kt
+
+Ui <-- screens
+
+
+component theme
+component Color.kt
+component Theme.kt
+component Type.kt
+
+theme <-- Color.kt
+theme <-- Theme.kt
+theme <-- Type.kt
+
+
+Ui <-- theme 
+
+component constants.kt
+component dto.kt
+component repository.kt
+
+constants.kt --> Domain
+dto.kt --> Domain
+repository.kt --> Domain
+
+component viewModel.kt
+component repositoryImpl.kt 
+
+viewModel.kt --> Application
+repositoryImpl.kt --> Application
+
+
+@enduml

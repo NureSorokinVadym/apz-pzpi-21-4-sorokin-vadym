@@ -14,6 +14,17 @@ def get_user_id(req: Request) -> int:
     return payload["user_id"]
 
 
+@router.get("/setting")
+async def setting(req: Request) -> dto.Settings:
+    try:
+        print(req.headers)
+        id = int(req.headers["Authorization"])
+        return await application.get_settings(id)
+    except Exception as e:
+        print(f"Error: {e}")
+        raise HTTPException(status_code=401, detail=f"Invalid IOT_ID, {e}")
+
+
 @router.patch("/start_exercise")
 async def start_exercise(req: Request) -> dto.DefaultResponse:
     try:
@@ -30,13 +41,14 @@ async def predict(req: Request, data: dto.IotData) -> dto.DefaultResponse:
         user_id = get_user_id(req)
         return await application.predict(user_id, data)
     except Exception as e:
+        print(f"Errror: {e}")
         raise HTTPException(status_code=401, detail=f"Invalid token, {e}")
 
 
 @router.patch("/end_exercise")
-async def end_exercise(req: Request) -> dto.ExerciseDuration:
+async def end_exercise(req: Request, iot_id: dto.IotId) -> dto.DefaultResponse:
     try:
         user_id = get_user_id(req)
-        return await application.end_exercise(user_id)
+        return await application.end_exercise(user_id, iot_id.iot_id)
     except Exception as e:
         raise HTTPException(status_code=401, detail=f"Invalid token, {e}")

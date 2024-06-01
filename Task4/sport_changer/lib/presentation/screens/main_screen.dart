@@ -47,18 +47,19 @@ Widget mainScreen(BuildContext context, WidgetRef ref) {
 Widget shellScreen(BuildContext context, WidgetRef ref,
     {required Widget child}) {
   final checkedIndex = useState(0);
+  final lang = languages[ref.watch(languageSettingProvider)] ?? {};
 
   return Scaffold(
     body: child,
     bottomNavigationBar: BottomNavigationBar(
-      items: const [
-        BottomNavigationBarItem(
+      items: [
+        const BottomNavigationBarItem(
           icon: Icon(Icons.fitness_center),
           label: "Pannel",
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.settings),
-          label: "Settings",
+          icon: const Icon(Icons.settings),
+          label: lang["settings"] ?? "Settings",
         ),
       ],
       currentIndex: checkedIndex.value,
@@ -77,15 +78,18 @@ Widget shellScreen(BuildContext context, WidgetRef ref,
 @hcwidget
 Widget userInfo(BuildContext context, WidgetRef ref,
     {required AuthInfo authInfo}) {
+  final lang = languages[ref.watch(languageSettingProvider)] ?? {};
+
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text("Email: ${authInfo.email}"),
-      Text("Name: ${authInfo.name}"),
-      Text("Surname: ${authInfo.surname}"),
-      Text("Login type: ${authInfo.loginType?.name}"),
+      Text("${lang["email"] ?? "Email"}: ${authInfo.email}"),
+      Text("${lang["name"] ?? "Name"}: ${authInfo.name}"),
+      Text("${lang["surname"] ?? "Surname"}: ${authInfo.surname}"),
       Text(
-          "Login variants: ${authInfo.loginVariants.map((l) => l.name).join(", ")}"),
+          "${lang["login_type"] ?? "Login type"}: ${authInfo.loginType?.name}"),
+      Text(
+          "${lang["login_variants"] ?? "Login variants"}: ${authInfo.loginVariants.map((l) => l.name).join(", ")}"),
     ],
   );
 }
@@ -93,10 +97,11 @@ Widget userInfo(BuildContext context, WidgetRef ref,
 @hcwidget
 Widget settingScreen(BuildContext context, WidgetRef ref) {
   final authInfo = ref.watch(authInfoControlerProvider);
+  final lang = languages[ref.watch(languageSettingProvider)] ?? {};
 
   return Scaffold(
     appBar: AppBar(
-      title: const Text("Settings"),
+      title: Text(lang["settings"] ?? "Settings"),
       actions: [
         IconButton(
             onPressed: () {
@@ -115,18 +120,38 @@ Widget settingScreen(BuildContext context, WidgetRef ref) {
                   ? const Text("Wait")
                   : UserInfo(authInfo: value),
               loading: () => const CircularProgressIndicator(),
-              error: (error, stack) => Text("Error: $error")),
+              error: (error, stack) =>
+                  Text("${lang["error"] ?? "Error"} $error")),
           const Gap(32),
-          TextButton(
-            onPressed: () {
-              ref.read(authInfoControlerProvider.notifier).changeUserType();
-            },
-            child: const Text("Change login type"),
-          )
+          Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+            TextButton(
+              onPressed: () {
+                ref.read(authInfoControlerProvider.notifier).changeUserType();
+              },
+              child: Text(lang["change_user_type"] ?? "Change user type"),
+            ),
+            const LangChanger()
+          ]),
         ],
       ),
     ),
   );
+}
+
+@hcwidget
+Widget langChanger(BuildContext context, WidgetRef ref) {
+  final lang = ref.watch(languageSettingProvider);
+
+  return DropdownMenu(
+      initialSelection: lang,
+      onSelected: (value) {
+        ref.read(languageSettingProvider.notifier).setLang(value ?? "en");
+      },
+      dropdownMenuEntries: const [
+        DropdownMenuEntry(label: "English", value: "en"),
+        DropdownMenuEntry(label: "Ukrainian", value: "ua")
+      ],
+      label: const Text("Language"));
 }
 
 @hcwidget

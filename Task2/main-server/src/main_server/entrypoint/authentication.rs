@@ -3,6 +3,7 @@ use rocket::serde::json::Json;
 pub mod jwt_provider {
     pub struct ApiKey<'r>(&'r str);
 
+    // Middleware, що дістає ключа з заголовка Authorization
     #[derive(Debug)]
     pub enum ApiKeyError {
         Missing,

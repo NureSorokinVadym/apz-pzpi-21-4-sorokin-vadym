@@ -74,6 +74,20 @@ class SettingScreen extends HookConsumerWidget {
       );
 }
 
+class LangChanger extends HookConsumerWidget {
+  const LangChanger({Key? key}) : super(key: key);
+
+  @override
+  Widget build(
+    BuildContext _context,
+    WidgetRef _ref,
+  ) =>
+      langChanger(
+        _context,
+        _ref,
+      );
+}
+
 class MultiScreen extends HookConsumerWidget {
   const MultiScreen({Key? key}) : super(key: key);
 

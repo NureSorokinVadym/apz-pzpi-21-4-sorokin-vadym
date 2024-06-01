@@ -1,6 +1,7 @@
 use rocket::serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 
+// Структура для відповіді на запити з сервера
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase", crate = "rocket::serde")]
 pub struct DefaultResponse {
@@ -20,6 +21,7 @@ impl DefaultResponse {
     }
 }
 
+// Імплементація для перетворення з Result<i32, String> віпдовіді СУБД в DefaultResponse
 impl From<Result<i32, String>> for DefaultResponse {
     fn from(result: Result<i32, String>) -> Self {
         match result {

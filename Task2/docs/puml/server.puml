@@ -2,24 +2,23 @@
 
 node "Docker Compose" as Server {
     [PostgreSQL]
-    [Redis]
     [Nginx]
 
     component "Python AI" as Python {
      () "main.py"
     } 
-    component "Rust bussines logic" as Rust {
+    component "Rust Main" as Rust {
      () "main.rs"
     }
 }
 
 [Nginx] --> [Rust]: HTTP
-[Rust] --> [PostgreSQL]: TPC/IP
-[Redis] <--> [Python]: TPC/IP
-[Redis] <--> [Rust]: TPC/IP
+[Nginx] --> [Python]: HTTP
+[Rust] --> [PostgreSQL]: TCP/IP
+[Python] --> [PostgreSQL]: TCP/IP
 
 component "Web Browser" as Web {
-    () "App.js"
+    () "main.dart"
 }
 
 component "Mobile phone" as Phone {
@@ -27,7 +26,7 @@ component "Mobile phone" as Phone {
 }
 
 component "Smart device" as IoT {
-    () "main.go?"
+    () "lib.rs"
 }
 
 IoT -- Nginx: HTTPS

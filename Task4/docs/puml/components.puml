@@ -1,0 +1,54 @@
+@startuml
+
+
+package Domain
+package Application
+package Presentation
+
+component Controllers
+component admin.dart
+component auth.dart
+component personal.dart
+
+component d_admin.dart
+component d_auth.dart
+component d_personal.dart
+
+component Router
+component router.dart
+component routes.dart
+
+component Screens
+component s_admin.dart
+component authentication.dart
+component main_screen.dart
+component s_personal.dart
+
+Presentation <-- Screens
+Screens <-- s_admin.dart 
+Screens <-- s_personal.dart 
+Screens <-- main_screen.dart
+Screens <-- authentication.dart
+
+Router --> Presentation
+router.dart --> Router
+routes.dart --> Router
+
+d_admin.dart --> Domain
+d_auth.dart --> Domain
+d_personal.dart --> Domain
+
+Application <-- Controllers
+Controllers <-- admin.dart
+auth.dart --> Controllers
+personal.dart --> Controllers
+
+package main.dart
+
+Presentation --> main.dart
+Application --> Presentation
+Domain --> Application
+
+
+@enduml
+

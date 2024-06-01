@@ -1,37 +1,23 @@
 @startuml
 left to right direction
 
-:Адміністратор: as Admin 
+actor "Відвідувач" as user
+actor "Адміністратор" as admin
+actor "Тренер" as pesonal 
 
-(Домовлятися просто зустріч) as MakeMeeting
-(Система нагород) as Apretication
-(Notifications) as Notifications
-(Statistic like hour per week) as Statistic
-(Авторизація with group permition support) as Authorization
-(Комунікувати між собою) as Comminicate
-(Отримувати рекомендації стосовно вправ) as Recomendation
-(Відслідковувати кількість вправ) as NumberExersice
-(Додавати тренерів) as AddPersonal
+user --> (Перегляд вправ)
+user --> (Авторизація)
+(Авторизація) <-- (Вхід): <<include>>
+(Авторизація) <-- (Реєстрація): <<include>>
 
-Client -- MakeMeeting
-Client -- Apretication
-Client -- Notifications
-Client -- Statistic
-Client -- Authorization
-Client -- Comminicate
-Client -- Recomendation
-Client -- NumberExersice
-Client -- AddPersonal
+admin --> (Додавання вправ)
+admin --> (Назначення тренерів)
+admin --> (Створення вправ)
+admin --> (Авторизація)
 
-Authorization -- Admin
-Comminicate -- Admin
-AddPersonal -- Admin
+pesonal --> (Призначення тренувань)
+pesonal --> (Перегляд тренувань)
+pesonal  --> (Авторизація)
 
-Personal -- MakeMeeting
-Personal -- Apretication
-Personal -- Notifications
-Personal -- Statistic
-Personal -- Authorization
-Personal -- Comminicate
 
 @enduml

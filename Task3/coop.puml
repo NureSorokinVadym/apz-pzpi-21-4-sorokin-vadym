@@ -1,0 +1,24 @@
+@startuml
+
+
+state "Приєднання до WiFi" as wifi 
+state "Отримання налаштувань" as settings
+
+[*] -r-> wifi : Початок
+
+
+state Сервер {
+    state "Прогнозування" as forecast
+    state "Рекомендація" as recommendation
+
+    forecast -l-> recommendation : ШІ прийняв рішення
+}
+
+
+wifi --> settings 
+settings -l-> Збір
+Збір -l-> Відправка : Дані зібрано
+Відправка --> forecast : Дані відправлено
+recommendation --> [*] : Кінець 
+
+@enduml

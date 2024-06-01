@@ -145,3 +145,48 @@ LoginType? getLoginType(GetLoginTypeRef ref) {
       loading: () => null,
       error: (error, _) => null);
 }
+
+@riverpod
+class LanguageSetting extends _$LanguageSetting {
+  @override
+  String build() {
+    return 'en';
+  }
+
+  setLang(String lang) {
+    state = lang;
+  }
+}
+
+const languages = {
+  "en": {
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "surname": "Surname",
+    "login_type": "Login type",
+    "login_variants": "Login variants",
+    "log_in": "Log in",
+    "log_up": "Log up",
+    "settings": "Settings",
+    "logout": "Logout",
+    "wait": "Wait",
+    "error": "Error",
+    "change_user_type": "Change user type",
+  },
+  "ua": {
+    "email": "Електронна пошта",
+    "password": "Пароль",
+    "name": "Ім'я",
+    "surname": "Прізвище",
+    "login_type": "Тип входу",
+    "login_variants": "Варіанти входу",
+    "log_in": "Увійти",
+    "log_up": "Зареєструватися",
+    "settings": "Налаштування",
+    "logout": "Вийти",
+    "wait": "Зачекайте",
+    "error": "Помилка",
+    "change_user_type": "Змінити тип користувача",
+  },
+};

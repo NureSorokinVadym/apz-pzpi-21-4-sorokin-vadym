@@ -23,5 +23,13 @@ class DefaultResponse(BaseModel):
     message: str
 
 
+class Settings(BaseModel):
+    token: str
+
+
+class IotId(BaseModel):
+    iot_id: int
+
+
 # user_id -> UserExercise
 exercises: dict[int, UserExercise] = {}

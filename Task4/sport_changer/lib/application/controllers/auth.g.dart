@@ -50,5 +50,21 @@ final authInfoControlerProvider =
 );
 
 typedef _$AuthInfoControler = AutoDisposeAsyncNotifier<AuthInfo?>;
+String _$languageSettingHash() => r'08745e7c723bab8561d0d59a5fc72a063314862d';
+
+/// See also [LanguageSetting].
+@ProviderFor(LanguageSetting)
+final languageSettingProvider =
+    AutoDisposeNotifierProvider<LanguageSetting, String>.internal(
+  LanguageSetting.new,
+  name: r'languageSettingProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$languageSettingHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$LanguageSetting = AutoDisposeNotifier<String>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

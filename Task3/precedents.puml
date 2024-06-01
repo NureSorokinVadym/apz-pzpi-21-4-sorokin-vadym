@@ -1,0 +1,15 @@
+@startuml
+left to right direction
+
+actor User as user
+
+usecase "Зчитувати дані користувача" as UC1
+usecase "Інформування чи треба продовжувати" as UC3
+usecase "Створення статистики" as UC4
+
+user --> UC1
+UC1 <-- UC3 : <<include>>
+user --> UC4
+
+
+@enduml

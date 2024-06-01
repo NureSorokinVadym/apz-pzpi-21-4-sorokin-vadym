@@ -1,0 +1,16 @@
+@startuml
+
+
+package Domain
+package Application
+package Presentation
+
+Presentation --> Application: Use
+Application --> Domain: Use
+Presentation --> Domain: Use
+
+
+
+
+@enduml
+

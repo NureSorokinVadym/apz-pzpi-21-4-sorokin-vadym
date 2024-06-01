@@ -1,0 +1,99 @@
+@startuml
+!define primary_key(x) <b><color:DarkGoldenRod><&key></color> x</b>
+!define foreign_key(x) <color:RoyalBlue><&key></color> x
+!define column(x) <color:LightSlateGray><&media-record></color> x
+!define table(x) entity x << (T, white) >>
+
+table( user_base ) {
+  primary_key( id )
+  column( name )
+  column( surname )
+  column( email )
+  column( password_hash )
+  column( photo )
+  column( birthday )
+  column( create_at )
+  column( update_at )
+}
+
+table( personal ) {
+  primary_key( id )
+  foreign_key( user_id )
+  foreign_key( specification_id )
+  column( create_at )
+  column( update_at )
+}
+
+table( specification ) {
+  primary_key( id )
+  column( name )
+}
+
+table( admin ) {
+  primary_key( id )
+  foreign_key( user_id )
+  column( access_level )
+  column( create_at )
+  column( update_at )
+}
+
+table( reward ) {
+  primary_key( id )
+  column( name )
+  column( condition )
+  column( create_at )
+}
+
+table( reward_user ) {
+  primary_key( id )
+  foreign_key( user_id )
+  foreign_key( reward_id )
+  column( create_at )
+  column( update_at )
+}
+
+table( exercice_type ) {
+  primary_key( id )
+  column( name )
+  column( create_at )
+}
+
+table( exercice ) {
+  primary_key( id )
+  column( name )
+  column( measurement )
+  foreign_key( exercice_type_id )
+  column( create_at )
+}
+
+table( exercice_user ) {
+  primary_key( id )
+  foreign_key( exercice_id )
+  foreign_key( user_id )
+  column( duration )
+  column( number )
+  column( weight )
+  column( pulse )
+  column( heard_rate )
+  column( create_at )
+}
+
+table( iot_user ) {
+  primary_key( id )
+  foreign_key( user_id )
+  foreign_key( next_exercise_id )
+  column( create_at )
+}
+
+user_base ||--{ personal
+user_base ||--{ admin
+user_base ||--{ reward_user
+user_base ||--{ exercice_user
+user_base ||--{ iot_user
+specification ||--{ personal
+reward ||--{ reward_user
+exercice_type ||--{ exercice
+exercice ||--{ exercice_user
+exercice_user ||--{ iot_user
+
+@enduml

@@ -1,0 +1,25 @@
+@startuml
+
+package MainApplication.kt
+
+package Domain
+package Application
+package Ui
+
+package JetpackCompose
+package Koin
+package Ktor
+package Kotlinx.Serialize
+
+Ui --> JetpackCompose 
+Application --> Koin
+Application --> Ktor
+Domain --> Kotlinx.Serialize
+
+MainApplication.kt --> Ui
+Ui --> Application
+Application --> Domain
+Ui --> Domain
+
+
+@enduml
